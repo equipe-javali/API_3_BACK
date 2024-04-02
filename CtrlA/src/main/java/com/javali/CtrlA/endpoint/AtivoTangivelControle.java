@@ -1,7 +1,7 @@
 package com.javali.CtrlA.endpoint;
 
 import com.javali.CtrlA.entidades.AtivoTangivel;
-import com.javali.CtrlA.repositorios.AtivoTangivelRepositorio;
+import com.javali.CtrlA.repositorios.AtivotangivelRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public class AtivoTangivelControle {
 
     @Autowired
-    private AtivoTangivelRepositorio repositorio;
+    private AtivotangivelRepositorio repositorio;
 
     @PostMapping("/ativotangivel")
     public ResponseEntity<AtivoTangivel> criarAtivoTangivel(@RequestBody AtivoTangivel novoAtivoTangivel) {
