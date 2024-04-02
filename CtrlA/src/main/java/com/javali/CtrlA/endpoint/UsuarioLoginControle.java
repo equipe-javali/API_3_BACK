@@ -54,7 +54,6 @@ public class UsuarioLoginControle {
                 .map(usuarioLogin -> {
                     usuarioLogin.setSenha(usuarioLoginAtualizado.getSenha());
 
-                    // Fetch the Usuario from the database
                     Usuario usuario = usuarioRepositorio.findById(usuarioLoginAtualizado.getUsuario().getId())
                             .orElseThrow(() -> new RuntimeException("Usuario not found with id " + usuarioLoginAtualizado.getUsuario().getId()));
 

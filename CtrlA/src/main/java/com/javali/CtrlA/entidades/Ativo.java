@@ -46,7 +46,7 @@ public class Ativo extends RepresentationModel<Ativo> {
     @JoinColumn(name = "id_responsavel")
     private Usuario idResponsavel;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_nota_fiscal")
     private NotaFiscal idNotaFiscal;
 

@@ -60,7 +60,8 @@ public class HistoricoAtivoIntangivel {
     @Column(name = "descricao")
     private Long descricao;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_nota_fiscal")
     private NotaFiscal idNotaFiscal;
+
 }

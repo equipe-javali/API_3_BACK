@@ -16,7 +16,7 @@ public class HistoricoAtivoTangivel {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_ativo_tangivel")
     private AtivoTangivel idAtivoTangivel;
 
@@ -63,7 +63,7 @@ public class HistoricoAtivoTangivel {
     @Column(name = "descricao", length = Integer.MAX_VALUE)
     private String descricao;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_nota_fiscal")
     private NotaFiscal idNotaFiscal;
 

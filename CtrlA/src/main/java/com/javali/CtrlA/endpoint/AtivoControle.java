@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -53,9 +52,6 @@ public class AtivoControle {
     public ResponseEntity<Ativo> atualizarAtivo(@PathVariable long id, @RequestBody Ativo ativoAtualizado) {
         return repositorio.findById(id)
                 .map(ativo -> {
-                    // Assuming Ativo has setters for its fields
-                    // Replace with actual field setters
-                    // ativo.setField(ativoAtualizado.getField());
                     repositorio.save(ativo);
                     hateoas.adicionarLink(ativo);
                     return new ResponseEntity<>(ativo, HttpStatus.OK);
