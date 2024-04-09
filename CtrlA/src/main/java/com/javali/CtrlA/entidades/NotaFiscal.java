@@ -1,6 +1,7 @@
 package com.javali.CtrlA.entidades;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
@@ -17,5 +18,9 @@ public class NotaFiscal extends RepresentationModel<NotaFiscal> {
 
     @Column(name = "documento", length = Integer.MAX_VALUE)
     private String documento;
+
+    @Size(max = 30)
+    @Column(name = "tipo_documento", length = 30)
+    private String tipoDocumento;
 
 }

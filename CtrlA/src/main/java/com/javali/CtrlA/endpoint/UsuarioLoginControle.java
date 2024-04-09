@@ -31,7 +31,7 @@ public class UsuarioLoginControle {
         return new ResponseEntity<>(usuariologin, HttpStatus.CREATED);
     }
 
-    @GetMapping("/usuariologins")
+    @GetMapping("/usuarioslogins")
     public ResponseEntity<List<UsuarioLogin>> obterTodosUsuariologin() {
         List<UsuarioLogin> usuarioLogins = repositorio.findAll();
         if (usuarioLogins.isEmpty()) {

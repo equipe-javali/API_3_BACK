@@ -1,13 +1,18 @@
 package com.javali.CtrlA.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.javali.CtrlA.entidades.Ativo;
+import com.javali.CtrlA.entidades.UsuarioLogin;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.hateoas.RepresentationModel;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -44,16 +49,6 @@ public class Usuario extends RepresentationModel<Usuario> {
     @Size(max = 100)
     @Column(name = "email", length = 100)
     private String email;
-
-    @Column(name = "data_cadastro")
-    private Instant dataCadastro;
-
-    @Column(name = "data_nascimento")
-    private Instant dataNascimento;
-
-    @Size(max = 255)
-    @Column(name = "nome_social")
-    private String nomeSocial;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "idResponsavel")

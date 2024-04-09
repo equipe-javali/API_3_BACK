@@ -1,6 +1,7 @@
 package com.javali.CtrlA.entidades;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.javali.CtrlA.entidades.Usuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
