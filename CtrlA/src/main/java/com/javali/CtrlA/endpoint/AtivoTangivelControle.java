@@ -1,6 +1,9 @@
+
 package com.javali.CtrlA.endpoint;
 
+import com.javali.CtrlA.entidades.Ativo;
 import com.javali.CtrlA.entidades.AtivoTangivel;
+import com.javali.CtrlA.repositorios.AtivoRepositorio;
 import com.javali.CtrlA.repositorios.AtivotangivelRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +20,14 @@ public class AtivoTangivelControle {
     @Autowired
     private AtivotangivelRepositorio repositorio;
 
+    @Autowired
+    private AtivoRepositorio ativoRepositorio;
+
     @PostMapping("/ativotangivel")
     public ResponseEntity<AtivoTangivel> criarAtivoTangivel(@RequestBody AtivoTangivel novoAtivoTangivel) {
+        Ativo ativo = ativoRepositorio.findById(novoAtivoTangivel.getAtivo().getId())
+                .orElseThrow(() -> new RuntimeException("Ativo not found with id " + novoAtivoTangivel.getAtivo().getId()));
+        novoAtivoTangivel.setAtivo(ativo);
         AtivoTangivel ativoTangivel = repositorio.save(novoAtivoTangivel);
         return new ResponseEntity<>(ativoTangivel, HttpStatus.CREATED);
     }
