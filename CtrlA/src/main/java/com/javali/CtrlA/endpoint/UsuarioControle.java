@@ -2,6 +2,7 @@ package com.javali.CtrlA.endpoint;
 
 import com.javali.CtrlA.componentes.UsuarioSelecionador;
 import com.javali.CtrlA.entidades.Usuario;
+import com.javali.CtrlA.entidades.UsuarioLogin;
 import com.javali.CtrlA.hateoas.UsuarioHateoas;
 import com.javali.CtrlA.repositorios.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +40,26 @@ public class UsuarioControle {
     @GetMapping("/listagemTodos")
     public ResponseEntity<List<Usuario>> obterUsuarios() {
         List<Usuario> usuarios = repositorio.findAll();
+        if (usuarios.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            hateoas.adicionarLink(usuarios);
+            return new ResponseEntity<>(usuarios, HttpStatus.OK);
+        }
+    }
+    
+    @GetMapping("/listagemTodosAdm")
+    public ResponseEntity<List<Usuario>> obterUsuariosAdm() {
+        List<Usuario> todosUsuarios = repositorio.findAll();
+        List<Usuario> usuarios = new ArrayList<Usuario>();
+        for (Usuario u : todosUsuarios) {
+        	if (u.getUsuariologin() != null) {
+        		UsuarioLogin login = u.getUsuariologin();
+        		login.setSenha("SenhaSuperSecreta");
+        		u.setUsuariologin(login);
+        		usuarios.add(u);
+        	}
+        }
         if (usuarios.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
