@@ -5,16 +5,18 @@ import com.javali.CtrlA.entidades.Ativo;
 import com.javali.CtrlA.entidades.AtivoTangivel;
 import com.javali.CtrlA.repositorios.AtivoRepositorio;
 import com.javali.CtrlA.repositorios.AtivotangivelRepositorio;
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/ativoTangivel")
 public class AtivoTangivelControle {
 
     @Autowired
@@ -23,7 +25,7 @@ public class AtivoTangivelControle {
     @Autowired
     private AtivoRepositorio ativoRepositorio;
 
-    @PostMapping("/ativotangivel")
+    @PostMapping("/cadastro")
     public ResponseEntity<AtivoTangivel> criarAtivoTangivel(@RequestBody AtivoTangivel novoAtivoTangivel) {
         Ativo ativo = ativoRepositorio.findById(novoAtivoTangivel.getAtivo().getId())
                 .orElseThrow(() -> new RuntimeException("Ativo not found with id " + novoAtivoTangivel.getAtivo().getId()));
@@ -32,7 +34,7 @@ public class AtivoTangivelControle {
         return new ResponseEntity<>(ativoTangivel, HttpStatus.CREATED);
     }
 
-    @GetMapping("/ativotangivels")
+    @GetMapping("/listagemTodos")
     public ResponseEntity<List<AtivoTangivel>> obterAtivoTangivels() {
         List<AtivoTangivel> ativoTangivels = repositorio.findAll();
         if (ativoTangivels.isEmpty()) {
@@ -42,23 +44,42 @@ public class AtivoTangivelControle {
         }
     }
 
-    @GetMapping("/ativotangivel/{id}")
+    @GetMapping("/listagem/{id}")
     public ResponseEntity<AtivoTangivel> obterAtivoTangivel(@PathVariable long id) {
         Optional<AtivoTangivel> ativoTangivelOptional = repositorio.findById(id);
         return ativoTangivelOptional.map(ativoTangivel -> new ResponseEntity<>(ativoTangivel, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/ativotangivel/{id}")
-    public ResponseEntity<AtivoTangivel> atualizarAtivoTangivel(@PathVariable long id, @RequestBody AtivoTangivel ativoTangivelAtualizado) {
+    @PutMapping("/atualizacao/{id}")
+    public ResponseEntity<?> atualizarAtivoTangivel(@PathVariable long id, @RequestBody AtivoTangivel ativoTangivelAtualizado) {
         return repositorio.findById(id)
                 .map(ativoTangivel -> {
-                    repositorio.save(ativoTangivel);
-                    return new ResponseEntity<>(ativoTangivel, HttpStatus.OK);
+                    Ativo ativo = ativoRepositorio.findById(ativoTangivelAtualizado.getAtivo().getId())
+                            .orElseThrow(() -> new RuntimeException("Ativo not found with id " + ativoTangivelAtualizado.getAtivo().getId()));
+                    ativoTangivelAtualizado.setAtivo(ativo);
+
+                    BeanUtilsBean notNull=new BeanUtilsBean(){
+                        @Override
+                        public void copyProperty(Object dest, String name, Object value)
+                                throws IllegalAccessException, InvocationTargetException {
+                            if(value!=null){
+                                super.copyProperty(dest, name, value);
+                            }
+                        }
+                    };
+                    try {
+                        notNull.copyProperties(ativoTangivel, ativoTangivelAtualizado);
+                    } catch (Exception e) {
+                        System.out.println("Exception while updating tangible asset: " + e.getMessage());
+                        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                    AtivoTangivel updatedAtivoTangivel = repositorio.save(ativoTangivel);
+                    return new ResponseEntity<>(updatedAtivoTangivel, HttpStatus.OK);
                 }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/ativotangivel/{id}")
+    @DeleteMapping("/exclusao/{id}")
     public ResponseEntity<Void> deletarAtivoTangivel(@PathVariable long id) {
         if (repositorio.existsById(id)) {
             repositorio.deleteById(id);

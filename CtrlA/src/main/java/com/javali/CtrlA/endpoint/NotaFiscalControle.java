@@ -11,19 +11,19 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/notaFiscal")
 public class NotaFiscalControle {
 
     @Autowired
     private NotaFiscalRepositorio repositorio;
 
-    @PostMapping("/notafiscal")
+    @PostMapping("/cadastro")
     public ResponseEntity<NotaFiscal> criarNotaFiscal(@RequestBody NotaFiscal novaNotaFiscal) {
         NotaFiscal notaFiscal = repositorio.save(novaNotaFiscal);
         return new ResponseEntity<>(notaFiscal, HttpStatus.CREATED);
     }
 
-    @GetMapping("/notasfiscais")
+    @GetMapping("/listagemTodos")
     public ResponseEntity<List<NotaFiscal>> obterNotasFiscais() {
         List<NotaFiscal> notasFiscais = repositorio.findAll();
         if (notasFiscais.isEmpty()) {
@@ -33,14 +33,14 @@ public class NotaFiscalControle {
         }
     }
 
-    @GetMapping("/notafiscal/{id}")
+    @GetMapping("/listagem/{id}")
     public ResponseEntity<NotaFiscal> obterNotaFiscal(@PathVariable long id) {
         Optional<NotaFiscal> notaFiscalOptional = repositorio.findById(id);
         return notaFiscalOptional.map(notaFiscal -> new ResponseEntity<>(notaFiscal, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/notafiscal/{id}")
+    @PutMapping("/atualizacao/{id}")
     public ResponseEntity<NotaFiscal> atualizarNotaFiscal(@PathVariable long id, @RequestBody NotaFiscal notaFiscalAtualizada) {
         return repositorio.findById(id)
                 .map(notaFiscal -> {
@@ -49,7 +49,7 @@ public class NotaFiscalControle {
                 }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/notafiscal/{id}")
+    @DeleteMapping("/exclusao/{id}")
     public ResponseEntity<Void> deletarNotaFiscal(@PathVariable long id) {
         if (repositorio.existsById(id)) {
             repositorio.deleteById(id);

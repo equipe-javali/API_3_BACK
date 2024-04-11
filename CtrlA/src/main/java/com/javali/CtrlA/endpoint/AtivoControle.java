@@ -3,16 +3,18 @@ package com.javali.CtrlA.endpoint;
 import com.javali.CtrlA.entidades.Ativo;
 import com.javali.CtrlA.hateoas.AtivoHateoas;
 import com.javali.CtrlA.repositorios.AtivoRepositorio;
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/ativo")
 public class AtivoControle {
 
     @Autowired
@@ -21,14 +23,14 @@ public class AtivoControle {
     @Autowired
     private AtivoHateoas hateoas;
 
-    @PostMapping("/ativo")
+    @PostMapping("/cadastro")
     public ResponseEntity<Ativo> criarAtivo(@RequestBody Ativo novoAtivo) {
         Ativo ativo = repositorio.save(novoAtivo);
         hateoas.adicionarLink(ativo);
         return new ResponseEntity<>(ativo, HttpStatus.CREATED);
     }
 
-    @GetMapping("/ativos")
+    @GetMapping("/listagemTodos")
     public ResponseEntity<List<Ativo>> obterAtivos() {
         List<Ativo> ativos = repositorio.findAll();
         if (ativos.isEmpty()) {
@@ -39,7 +41,7 @@ public class AtivoControle {
         }
     }
 
-    @GetMapping("/ativo/{id}")
+    @GetMapping("/listagem/{id}")
     public ResponseEntity<Ativo> obterAtivo(@PathVariable long id) {
         Optional<Ativo> ativoOptional = repositorio.findById(id);
         return ativoOptional.map(ativo -> {
@@ -48,17 +50,32 @@ public class AtivoControle {
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/ativo/{id}")
-    public ResponseEntity<Ativo> atualizarAtivo(@PathVariable long id, @RequestBody Ativo ativoAtualizado) {
+    @PutMapping("/atualizacao/{id}")
+    public ResponseEntity<?> atualizarAtivo(@PathVariable long id, @RequestBody Ativo ativoAtualizado) {
         return repositorio.findById(id)
                 .map(ativo -> {
-                    repositorio.save(ativo);
-                    hateoas.adicionarLink(ativo);
-                    return new ResponseEntity<>(ativo, HttpStatus.OK);
+                    BeanUtilsBean notNull=new BeanUtilsBean(){
+                        @Override
+                        public void copyProperty(Object dest, String name, Object value)
+                                throws IllegalAccessException, InvocationTargetException {
+                            if(value!=null){
+                                super.copyProperty(dest, name, value);
+                            }
+                        }
+                    };
+                    try {
+                        notNull.copyProperties(ativo, ativoAtualizado);
+                    } catch (Exception e) {
+                        System.out.println("Exception while updating asset: " + e.getMessage());
+                        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                    Ativo updatedAtivo = repositorio.save(ativo);
+                    hateoas.adicionarLink(updatedAtivo);
+                    return new ResponseEntity<>(updatedAtivo, HttpStatus.OK);
                 }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/ativo/{id}")
+    @DeleteMapping("/exclusao/{id}")
     public ResponseEntity<Void> deletarAtivo(@PathVariable long id) {
         if (repositorio.existsById(id)) {
             repositorio.deleteById(id);

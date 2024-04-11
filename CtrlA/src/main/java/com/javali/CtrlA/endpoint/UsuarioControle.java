@@ -9,11 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/usuario")
 public class UsuarioControle {
 
     @Autowired
@@ -25,14 +27,14 @@ public class UsuarioControle {
     @Autowired
     private UsuarioSelecionador selecionador;
 
-    @PostMapping("/usuario")
+    @PostMapping("/cadastro")
     public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario novoUsuario) {
         Usuario usuario = repositorio.save(novoUsuario);
         hateoas.adicionarLink(usuario);
         return new ResponseEntity<>(usuario, HttpStatus.CREATED);
     }
 
-    @GetMapping("/usuarios")
+    @GetMapping("/listagemTodos")
     public ResponseEntity<List<Usuario>> obterUsuarios() {
         List<Usuario> usuarios = repositorio.findAll();
         if (usuarios.isEmpty()) {
@@ -43,7 +45,7 @@ public class UsuarioControle {
         }
     }
 
-    @GetMapping("/usuario/{id}")
+    @GetMapping("/listagem/{id}")
     public ResponseEntity<Usuario> obterUsuario(@PathVariable long id) {
         Optional<Usuario> usuarioOptional = repositorio.findById(id);
         return usuarioOptional.map(usuario -> {
@@ -52,24 +54,41 @@ public class UsuarioControle {
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/usuario/{id}")
-    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable long id, @RequestBody Usuario usuarioAtualizado) {
+    @PutMapping("/atualizacao/{id}")
+    public ResponseEntity<?> atualizarUsuario(@PathVariable long id, @RequestBody Usuario usuarioAtualizado) {
         return repositorio.findById(id)
                 .map(usuario -> {
-                    // Assuming Usuario has setters for its fields
-                    // Replace with actual field setters
-                    // usuario.setField(usuarioAtualizado.getField());
-                    repositorio.save(usuario);
-                    hateoas.adicionarLink(usuario);
-                    return new ResponseEntity<>(usuario, HttpStatus.OK);
+                    BeanUtilsBean notNull=new BeanUtilsBean(){
+                        @Override
+                        public void copyProperty(Object dest, String name, Object value)
+                                throws IllegalAccessException, InvocationTargetException {
+                            if(value!=null){
+                                super.copyProperty(dest, name, value);
+                            }
+                        }
+                    };
+                    try {
+                        notNull.copyProperties(usuario, usuarioAtualizado);
+                    } catch (Exception e) {
+                        System.out.println("Exception while updating user: " + e.getMessage());
+                        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                    Usuario updatedUsuario = repositorio.save(usuario);
+                    hateoas.adicionarLink(updatedUsuario);
+                    return new ResponseEntity<>(updatedUsuario, HttpStatus.OK);
                 }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/usuario/{id}")
+    @DeleteMapping("/exclusao/{id}")
     public ResponseEntity<Void> deletarUsuario(@PathVariable long id) {
         if (repositorio.existsById(id)) {
-            repositorio.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            try {
+                repositorio.deleteById(id);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } catch (Exception e) {
+                System.out.println("Exception while deleting user: " + e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

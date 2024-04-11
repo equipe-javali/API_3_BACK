@@ -11,19 +11,19 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/historicoAtivoTangivel")
 public class HistoricoAtivoTangivelControle {
 
     @Autowired
     private HistoricoAtivoTangivelRepositorio repositorio;
 
-    @PostMapping("/historicoativotangivel")
+    @PostMapping("/cadastro")
     public ResponseEntity<HistoricoAtivoTangivel> criarHistoricoAtivoTangivel(@RequestBody HistoricoAtivoTangivel novoHistoricoAtivoTangivel) {
         HistoricoAtivoTangivel historicoAtivoTangivel = repositorio.save(novoHistoricoAtivoTangivel);
         return new ResponseEntity<>(historicoAtivoTangivel, HttpStatus.CREATED);
     }
 
-    @GetMapping("/historicoativotangivels")
+    @GetMapping("/listagemTodos")
     public ResponseEntity<List<HistoricoAtivoTangivel>> obterHistoricoAtivoTangivels() {
         List<HistoricoAtivoTangivel> historicoAtivoTangivels = repositorio.findAll();
         if (historicoAtivoTangivels.isEmpty()) {
@@ -33,14 +33,14 @@ public class HistoricoAtivoTangivelControle {
         }
     }
 
-    @GetMapping("/historicoativotangivel/{id}")
+    @GetMapping("/listagem/{id}")
     public ResponseEntity<HistoricoAtivoTangivel> obterHistoricoAtivoTangivel(@PathVariable long id) {
         Optional<HistoricoAtivoTangivel> historicoAtivoTangivelOptional = repositorio.findById(id);
         return historicoAtivoTangivelOptional.map(historicoAtivoTangivel -> new ResponseEntity<>(historicoAtivoTangivel, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/historicoativotangivel/{id}")
+    @PutMapping("/atualizacao/{id}")
     public ResponseEntity<HistoricoAtivoTangivel> atualizarHistoricoAtivoTangivel(@PathVariable long id, @RequestBody HistoricoAtivoTangivel historicoAtivoTangivelAtualizado) {
         return repositorio.findById(id)
                 .map(historicoAtivoTangivel -> {
@@ -49,7 +49,7 @@ public class HistoricoAtivoTangivelControle {
                 }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/historicoativotangivel/{id}")
+    @DeleteMapping("/exclusao/{id}")
     public ResponseEntity<Void> deletarHistoricoAtivoTangivel(@PathVariable long id) {
         if (repositorio.existsById(id)) {
             repositorio.deleteById(id);

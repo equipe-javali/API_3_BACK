@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/usuarioLogin")
 public class UsuarioLoginControle {
 
     @Autowired
@@ -22,7 +22,7 @@ public class UsuarioLoginControle {
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
 
-    @PostMapping("/usuariologin")
+    @PostMapping("/cadastro")
     public ResponseEntity<UsuarioLogin> criarUsuariologin(@RequestBody UsuarioLogin novoUsuarioLogin) {
         Usuario usuario = usuarioRepositorio.findById(novoUsuarioLogin.getUsuario().getId())
                 .orElseThrow(() -> new RuntimeException("Usuario not found with id " + novoUsuarioLogin.getUsuario().getId()));
@@ -31,7 +31,7 @@ public class UsuarioLoginControle {
         return new ResponseEntity<>(usuariologin, HttpStatus.CREATED);
     }
 
-    @GetMapping("/usuarioslogins")
+    @GetMapping("/listagemTodos")
     public ResponseEntity<List<UsuarioLogin>> obterTodosUsuariologin() {
         List<UsuarioLogin> usuarioLogins = repositorio.findAll();
         if (usuarioLogins.isEmpty()) {
@@ -41,14 +41,14 @@ public class UsuarioLoginControle {
         }
     }
 
-    @GetMapping("/usuariologin/{id}")
+    @GetMapping("/listagem/{id}")
     public ResponseEntity<UsuarioLogin> obterUsuariologinPorId(@PathVariable Long id) {
         Optional<UsuarioLogin> usuariologinOptional = repositorio.findById(id);
         return usuariologinOptional.map(usuarioLogin -> new ResponseEntity<>(usuarioLogin, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/usuariologin/{id}")
+    @PutMapping("/atualizacao/{id}")
     public ResponseEntity<UsuarioLogin> atualizarUsuariologin(@PathVariable Long id, @RequestBody UsuarioLogin usuarioLoginAtualizado) {
         return repositorio.findById(id)
                 .map(usuarioLogin -> {
@@ -64,7 +64,7 @@ public class UsuarioLoginControle {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/usuariologin/{id}")
+    @DeleteMapping("/exclusao/{id}")
     public ResponseEntity<Void> deletarUsuariologin(@PathVariable Long id) {
         if (repositorio.existsById(id)) {
             repositorio.deleteById(id);
