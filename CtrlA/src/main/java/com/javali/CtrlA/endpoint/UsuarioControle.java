@@ -81,16 +81,29 @@ public class UsuarioControle {
 
     @DeleteMapping("/exclusao/{id}")
     public ResponseEntity<Void> deletarUsuario(@PathVariable long id) {
-        if (repositorio.existsById(id)) {
-            try {
-                repositorio.deleteById(id);
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } catch (Exception e) {
-                System.out.println("Exception while deleting user: " + e.getMessage());
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } else {
+        Optional<Usuario> usuarioOptional = repositorio.findById(id);
+        if (!usuarioOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        Usuario usuario = usuarioOptional.get();
+        if (usuario.getUsuariologin() != null) {
+            usuario.getUsuariologin().setUsuario(null);
+            usuario.setUsuariologin(null);
+            repositorio.save(usuario);
+        }
+
+        try {
+            repositorio.deleteById(id);
+            if (repositorio.existsById(id)) {
+                // The user still exists in the repository after the delete operation
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            System.out.println("Exception while deleting user: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
