@@ -1,9 +1,6 @@
 package com.javali.CtrlA.entidades;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import com.javali.CtrlA.entidades.Ativo;
 import com.javali.CtrlA.entidades.UsuarioLogin;
 import jakarta.persistence.*;
@@ -50,7 +47,8 @@ public class Usuario extends RepresentationModel<Usuario> {
     @Column(name = "email", length = 100)
     private String email;
 
-    @JsonManagedReference
+//    @JsonManagedReference
+    @JsonBackReference
     @OneToMany(mappedBy = "idResponsavel")
     private Set<Ativo> ativos = new LinkedHashSet<>();
 
