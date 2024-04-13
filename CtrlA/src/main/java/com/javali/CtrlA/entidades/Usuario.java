@@ -48,9 +48,9 @@ public class Usuario extends RepresentationModel<Usuario> {
     private String email;
 
 //    @JsonManagedReference
-    @JsonBackReference
-    @OneToMany(mappedBy = "idResponsavel")
-    private Set<Ativo> ativos = new LinkedHashSet<>();
+//    @JsonBackReference
+//    @OneToMany(mappedBy = "idResponsavel")
+//    private Set<Ativo> ativos = new LinkedHashSet<>();
 
     @JsonManagedReference
     @OneToOne(mappedBy = "usuario")
