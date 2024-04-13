@@ -26,9 +26,6 @@ public class AtivoIntangivelControle {
 
     @PostMapping("/cadastro")
     public ResponseEntity<AtivoIntangivel> criarAtivoIntangivel(@RequestBody AtivoIntangivel novoAtivoIntangivel) {
-        Ativo ativo = ativoRepositorio.findById(novoAtivoIntangivel.getAtivo().getId())
-                .orElseThrow(() -> new RuntimeException("Ativo not found with id " + novoAtivoIntangivel.getAtivo().getId()));
-        novoAtivoIntangivel.setAtivo(ativo);
         AtivoIntangivel ativoIntangivel = repositorio.save(novoAtivoIntangivel);
         return new ResponseEntity<>(ativoIntangivel, HttpStatus.CREATED);
     }
