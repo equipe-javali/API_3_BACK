@@ -1,8 +1,11 @@
 package com.javali.CtrlA.endpoint;
 
 import com.javali.CtrlA.entidades.Ativo;
+import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.hateoas.AtivoHateoas;
 import com.javali.CtrlA.repositorios.AtivoRepositorio;
+import com.javali.CtrlA.repositorios.UsuarioRepositorio;
+
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,8 @@ public class AtivoControle {
 
     @Autowired
     private AtivoRepositorio repositorio;
+    
+    @Autowired UsuarioRepositorio repoUsu;
 
     @Autowired
     private AtivoHateoas hateoas;
@@ -84,4 +89,23 @@ public class AtivoControle {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    
+    @PutMapping("associarAtivo/{id}")
+    public ResponseEntity<?> associarAtivoUsuario(@PathVariable Long id, @RequestBody Long usuarioId){
+    	if (repositorio.existsById(id)) {
+    		Ativo ativo = repositorio.findById(id).get();
+    		if (repoUsu.existsById(usuarioId)) {
+    			ativo.setIdResponsavel(repoUsu.findById(usuarioId).get());
+    		} else {
+    			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    		}
+    		repositorio.save(ativo);
+    		return new ResponseEntity<>(HttpStatus.OK);
+    	} else {
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
+    	
+    }
+    
+    
 }

@@ -47,8 +47,9 @@ public class Ativo extends RepresentationModel<Ativo> {
     @Column(name = "status", length = 50)
     private String status;
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonManagedReference
+//    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_responsavel")
     private Usuario idResponsavel;
 

@@ -33,9 +33,9 @@ public class AtivoTangivel extends RepresentationModel<AtivoTangivel> {
     @Column(name = "garantia")
     private LocalDate garantia;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_responsavel")
-    private Ativo idResponsavel;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "id_responsavel", nullable = true)
+//    private Usuario idResponsavel;
 
     @Column(name = "taxa_depreciacao", precision = 10, scale = 2)
     private BigDecimal taxaDepreciacao;
