@@ -5,9 +5,13 @@ import com.javali.CtrlA.entidades.Ativo;
 import com.javali.CtrlA.entidades.AtivoTangivel;
 import com.javali.CtrlA.repositorios.AtivoRepositorio;
 import com.javali.CtrlA.repositorios.AtivotangivelRepositorio;
+
+import lombok.val;
+
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,11 +29,8 @@ public class AtivoTangivelControle {
     @Autowired
     private AtivoRepositorio ativoRepositorio;
 
-    @PostMapping("/cadastro")
+    @PostMapping(value = "/cadastro", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AtivoTangivel> criarAtivoTangivel(@RequestBody AtivoTangivel novoAtivoTangivel) {
-        Ativo ativo = ativoRepositorio.findById(novoAtivoTangivel.getAtivo().getId())
-                .orElseThrow(() -> new RuntimeException("Ativo not found with id " + novoAtivoTangivel.getAtivo().getId()));
-        novoAtivoTangivel.setAtivo(ativo);
         AtivoTangivel ativoTangivel = repositorio.save(novoAtivoTangivel);
         return new ResponseEntity<>(ativoTangivel, HttpStatus.CREATED);
     }

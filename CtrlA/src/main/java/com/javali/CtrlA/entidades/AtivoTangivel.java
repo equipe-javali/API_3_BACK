@@ -26,9 +26,9 @@ public class AtivoTangivel extends RepresentationModel<AtivoTangivel> {
     @JoinColumn(name = "id_ativo", nullable = false)
     private Ativo ativo;
 
-    @Size(max = 100)
-    @Column(name = "marca", length = 100)
-    private String marca;
+//    @Size(max = 100)
+//    @Column(name = "marca", length = 100)
+//    private String marca;
 
     @Column(name = "garantia")
     private LocalDate garantia;

@@ -47,14 +47,14 @@ public class Ativo extends RepresentationModel<Ativo> {
     @Column(name = "status", length = 50)
     private String status;
 
-    @JsonManagedReference
-//    @JsonBackReference
+    @JsonBackReference(value = "id_responsavel")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_responsavel")
+    @JoinColumn(name = "id_responsavel", nullable = true)
     private Usuario idResponsavel;
-
+    
+    @JsonBackReference(value = "id_nota_fiscal")
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_nota_fiscal")
+    @JoinColumn(name = "id_nota_fiscal", nullable = true)
     private NotaFiscal idNotaFiscal;
 
     @Size(max = 500)
