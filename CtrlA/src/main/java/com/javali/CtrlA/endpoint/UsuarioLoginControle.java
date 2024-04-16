@@ -6,6 +6,7 @@ import com.javali.CtrlA.repositorios.UsuarioLoginRepositorio;
 import com.javali.CtrlA.repositorios.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,11 +23,8 @@ public class UsuarioLoginControle {
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
 
-    @PostMapping("/cadastro")
+    @PostMapping(value = "/cadastro", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UsuarioLogin> criarUsuariologin(@RequestBody UsuarioLogin novoUsuarioLogin) {
-        Usuario usuario = usuarioRepositorio.findById(novoUsuarioLogin.getUsuario().getId())
-                .orElseThrow(() -> new RuntimeException("Usuario not found with id " + novoUsuarioLogin.getUsuario().getId()));
-        novoUsuarioLogin.setUsuario(usuario);
         UsuarioLogin usuariologin = repositorio.save(novoUsuarioLogin);
         return new ResponseEntity<>(usuariologin, HttpStatus.CREATED);
     }
