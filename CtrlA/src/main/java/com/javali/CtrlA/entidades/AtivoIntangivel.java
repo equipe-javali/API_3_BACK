@@ -29,10 +29,6 @@ public class AtivoIntangivel extends RepresentationModel<AtivoIntangivel> {
     @Column(name = "data_expiracao")
     private LocalDate dataExpiracao;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_responsavel")
-//    private Usuario idResponsavel;
-
     @Column(name = "taxa_amortizacao", precision = 10, scale = 2)
     private BigDecimal taxaAmortizacao;
 

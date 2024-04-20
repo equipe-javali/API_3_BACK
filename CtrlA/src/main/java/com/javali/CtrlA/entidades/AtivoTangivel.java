@@ -26,16 +26,8 @@ public class AtivoTangivel extends RepresentationModel<AtivoTangivel> {
     @JoinColumn(name = "id_ativo", nullable = false)
     private Ativo ativo;
 
-//    @Size(max = 100)
-//    @Column(name = "marca", length = 100)
-//    private String marca;
-
     @Column(name = "garantia")
     private LocalDate garantia;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_responsavel", nullable = true)
-//    private Usuario idResponsavel;
 
     @Column(name = "taxa_depreciacao", precision = 10, scale = 2)
     private BigDecimal taxaDepreciacao;
@@ -43,5 +35,4 @@ public class AtivoTangivel extends RepresentationModel<AtivoTangivel> {
     @Size(max = 30)
     @Column(name = "periodo_depreciacao", length = 30)
     private String periodoDepreciacao;
-
 }
