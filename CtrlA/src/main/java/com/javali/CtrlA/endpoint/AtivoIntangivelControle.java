@@ -2,8 +2,12 @@ package com.javali.CtrlA.endpoint;
 
 import com.javali.CtrlA.entidades.Ativo;
 import com.javali.CtrlA.entidades.AtivoIntangivel;
+import com.javali.CtrlA.entidades.NotaFiscal;
+import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.repositorios.AtivoRepositorio;
 import com.javali.CtrlA.repositorios.AtivointangivelRepositorio;
+import com.javali.CtrlA.repositorios.NotaFiscalRepositorio;
+import com.javali.CtrlA.repositorios.UsuarioRepositorio;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +27,12 @@ public class AtivoIntangivelControle {
 
     @Autowired
     private AtivoRepositorio ativoRepositorio;
+
+    @Autowired
+    private UsuarioRepositorio usuarioRepositorio;
+
+    @Autowired
+    private NotaFiscalRepositorio notaFiscalRepositorio;
 
     @PostMapping("/cadastro")
     public ResponseEntity<AtivoIntangivel> criarAtivoIntangivel(@RequestBody AtivoIntangivel novoAtivoIntangivel) {
@@ -51,26 +61,55 @@ public class AtivoIntangivelControle {
     public ResponseEntity<?> atualizarAtivoIntangivel(@PathVariable long id, @RequestBody AtivoIntangivel ativoIntangivelAtualizado) {
         return repositorio.findById(id)
                 .map(ativoIntangivel -> {
-                    Ativo ativo = ativoRepositorio.findById(ativoIntangivelAtualizado.getAtivo().getId())
-                            .orElseThrow(() -> new RuntimeException("Ativo not found with id " + ativoIntangivelAtualizado.getAtivo().getId()));
-                    ativoIntangivelAtualizado.setAtivo(ativo);
+                    Ativo ativo = ativoRepositorio.findById(ativoIntangivel.getAtivo().getId())
+                            .orElseThrow(() -> new RuntimeException("Ativo not found with id " + ativoIntangivel.getAtivo().getId()));
 
-                    BeanUtilsBean notNull=new BeanUtilsBean(){
+                    // Fetch the Usuario and NotaFiscal entities from the database if idResponsavel and idNotaFiscal are not null
+                    if (ativoIntangivelAtualizado.getAtivo().getIdResponsavel() != null) {
+                        Usuario usuario = usuarioRepositorio.findById(ativoIntangivelAtualizado.getAtivo().getIdResponsavel().getId())
+                                .orElseThrow(() -> new RuntimeException("Usuario not found with id " + ativoIntangivelAtualizado.getAtivo().getIdResponsavel().getId()));
+                        ativo.setIdResponsavel(usuario);
+                    }
+                    if (ativoIntangivelAtualizado.getAtivo().getIdNotaFiscal() != null) {
+                        NotaFiscal notaFiscal = notaFiscalRepositorio.findById(ativoIntangivelAtualizado.getAtivo().getIdNotaFiscal().getId())
+                                .orElseThrow(() -> new RuntimeException("NotaFiscal not found with id " + ativoIntangivelAtualizado.getAtivo().getIdNotaFiscal().getId()));
+                        ativo.setIdNotaFiscal(notaFiscal);
+                    }
+
+                    // Create a custom BeanUtilsBean that ignores null properties
+                    BeanUtilsBean notNull = new BeanUtilsBean() {
                         @Override
                         public void copyProperty(Object dest, String name, Object value)
                                 throws IllegalAccessException, InvocationTargetException {
-                            if(value!=null){
-                                super.copyProperty(dest, name, value);
-                            }
+                            if (value == null) return;
+                            super.copyProperty(dest, name, value);
                         }
                     };
+
+                    // Copy the properties from ativoIntangivelAtualizado.getAtivo() to ativo
                     try {
-                        notNull.copyProperties(ativoIntangivel, ativoIntangivelAtualizado);
-                    } catch (Exception e) {
-                        System.out.println("Exception while updating intangible asset: " + e.getMessage());
-                        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                        notNull.copyProperties(ativo, ativoIntangivelAtualizado.getAtivo());
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException("Error copying properties", e);
                     }
-                    AtivoIntangivel updatedAtivoIntangivel = repositorio.save(ativoIntangivel);
+
+                    // Save the Ativo entity
+                    ativo = ativoRepositorio.save(ativo);
+
+                    // Create a new AtivoIntangivel object and set the updated Ativo entity to it
+                    AtivoIntangivel updatedAtivoIntangivel = new AtivoIntangivel();
+                    updatedAtivoIntangivel.setAtivo(ativo);
+
+                    // Copy the properties from ativoIntangivelAtualizado to updatedAtivoIntangivel
+                    try {
+                        notNull.copyProperties(updatedAtivoIntangivel, ativoIntangivelAtualizado);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException("Error copying properties", e);
+                    }
+
+                    // Save the updated AtivoIntangivel entity
+                    updatedAtivoIntangivel = repositorio.save(updatedAtivoIntangivel);
+
                     return new ResponseEntity<>(updatedAtivoIntangivel, HttpStatus.OK);
                 }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
