@@ -3,9 +3,13 @@ package com.javali.CtrlA.endpoint;
 
 import com.javali.CtrlA.entidades.Ativo;
 import com.javali.CtrlA.entidades.AtivoTangivel;
+import com.javali.CtrlA.entidades.NotaFiscal;
+import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.repositorios.AtivoRepositorio;
 import com.javali.CtrlA.repositorios.AtivotangivelRepositorio;
 
+import com.javali.CtrlA.repositorios.NotaFiscalRepositorio;
+import com.javali.CtrlA.repositorios.UsuarioRepositorio;
 import lombok.val;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
@@ -28,6 +32,10 @@ public class AtivoTangivelControle {
 
     @Autowired
     private AtivoRepositorio ativoRepositorio;
+    @Autowired
+    private NotaFiscalRepositorio notaFiscalRepositorio;
+    @Autowired
+    private UsuarioRepositorio usuarioRepositorio;
 
     @PostMapping(value = "/cadastro", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AtivoTangivel> criarAtivoTangivel(@RequestBody AtivoTangivel novoAtivoTangivel) {
@@ -56,26 +64,55 @@ public class AtivoTangivelControle {
     public ResponseEntity<?> atualizarAtivoTangivel(@PathVariable long id, @RequestBody AtivoTangivel ativoTangivelAtualizado) {
         return repositorio.findById(id)
                 .map(ativoTangivel -> {
-                    Ativo ativo = ativoRepositorio.findById(ativoTangivelAtualizado.getAtivo().getId())
-                            .orElseThrow(() -> new RuntimeException("Ativo not found with id " + ativoTangivelAtualizado.getAtivo().getId()));
-                    ativoTangivelAtualizado.setAtivo(ativo);
+                    Ativo ativo = ativoRepositorio.findById(ativoTangivel.getAtivo().getId())
+                            .orElseThrow(() -> new RuntimeException("Ativo not found with id " + ativoTangivel.getAtivo().getId()));
 
-                    BeanUtilsBean notNull=new BeanUtilsBean(){
+                    // Fetch the Usuario and NotaFiscal entities from the database if idResponsavel and idNotaFiscal are not null
+                    if (ativoTangivelAtualizado.getAtivo().getIdResponsavel() != null) {
+                        Usuario usuario = usuarioRepositorio.findById(ativoTangivelAtualizado.getAtivo().getIdResponsavel().getId())
+                                .orElseThrow(() -> new RuntimeException("Usuario not found with id " + ativoTangivelAtualizado.getAtivo().getIdResponsavel().getId()));
+                        ativo.setIdResponsavel(usuario);
+                    }
+                    if (ativoTangivelAtualizado.getAtivo().getIdNotaFiscal() != null) {
+                        NotaFiscal notaFiscal = notaFiscalRepositorio.findById(ativoTangivelAtualizado.getAtivo().getIdNotaFiscal().getId())
+                                .orElseThrow(() -> new RuntimeException("NotaFiscal not found with id " + ativoTangivelAtualizado.getAtivo().getIdNotaFiscal().getId()));
+                        ativo.setIdNotaFiscal(notaFiscal);
+                    }
+
+                    // Create a custom BeanUtilsBean that ignores null properties
+                    BeanUtilsBean notNull = new BeanUtilsBean() {
                         @Override
                         public void copyProperty(Object dest, String name, Object value)
                                 throws IllegalAccessException, InvocationTargetException {
-                            if(value!=null){
-                                super.copyProperty(dest, name, value);
-                            }
+                            if (value == null) return;
+                            super.copyProperty(dest, name, value);
                         }
                     };
+
+                    // Copy the properties from ativoTangivelAtualizado.getAtivo() to ativo
                     try {
-                        notNull.copyProperties(ativoTangivel, ativoTangivelAtualizado);
-                    } catch (Exception e) {
-                        System.out.println("Exception while updating tangible asset: " + e.getMessage());
-                        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                        notNull.copyProperties(ativo, ativoTangivelAtualizado.getAtivo());
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException("Error copying properties", e);
                     }
-                    AtivoTangivel updatedAtivoTangivel = repositorio.save(ativoTangivel);
+
+                    // Save the Ativo entity
+                    ativo = ativoRepositorio.save(ativo);
+
+                    // Create a new AtivoTangivel object and set the updated Ativo entity to it
+                    AtivoTangivel updatedAtivoTangivel = new AtivoTangivel();
+                    updatedAtivoTangivel.setAtivo(ativo);
+
+                    // Copy the properties from ativoTangivelAtualizado to updatedAtivoTangivel
+                    try {
+                        notNull.copyProperties(updatedAtivoTangivel, ativoTangivelAtualizado);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException("Error copying properties", e);
+                    }
+
+                    // Save the updated AtivoTangivel entity
+                    updatedAtivoTangivel = repositorio.save(updatedAtivoTangivel);
+
                     return new ResponseEntity<>(updatedAtivoTangivel, HttpStatus.OK);
                 }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
