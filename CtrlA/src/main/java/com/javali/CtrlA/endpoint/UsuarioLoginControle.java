@@ -25,6 +25,9 @@ public class UsuarioLoginControle {
 
     @PostMapping(value = "/cadastro", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UsuarioLogin> criarUsuariologin(@RequestBody UsuarioLogin novoUsuarioLogin) {
+        Usuario usuario = usuarioRepositorio.findById(novoUsuarioLogin.getUsuario().getId())
+                .orElseThrow(() -> new RuntimeException("Usuario not found with id " + novoUsuarioLogin.getUsuario().getId()));
+        novoUsuarioLogin.setUsuario(usuario);
         UsuarioLogin usuariologin = repositorio.save(novoUsuarioLogin);
         return new ResponseEntity<>(usuariologin, HttpStatus.CREATED);
     }

@@ -21,7 +21,7 @@ public class UsuarioLogin extends RepresentationModel<UsuarioLogin> {
     private Long id;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id", nullable = false)
     @JsonBackReference
     private Usuario usuario;
