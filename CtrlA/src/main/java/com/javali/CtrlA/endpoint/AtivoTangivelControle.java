@@ -99,19 +99,19 @@ public class AtivoTangivelControle {
                     // Save the Ativo entity
                     ativo = ativoRepositorio.save(ativo);
 
-                    // Create a new AtivoTangivel object and set the updated Ativo entity to it
-                    AtivoTangivel updatedAtivoTangivel = new AtivoTangivel();
-                    updatedAtivoTangivel.setAtivo(ativo);
-
-                    // Copy the properties from ativoTangivelAtualizado to updatedAtivoTangivel
-                    try {
-                        notNull.copyProperties(updatedAtivoTangivel, ativoTangivelAtualizado);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException("Error copying properties", e);
+                    // Update the AtivoTangivel entity
+                    if (ativoTangivelAtualizado.getGarantia() != null) {
+                        ativoTangivel.setGarantia(ativoTangivelAtualizado.getGarantia());
+                    }
+                    if (ativoTangivelAtualizado.getTaxaDepreciacao() != null) {
+                        ativoTangivel.setTaxaDepreciacao(ativoTangivelAtualizado.getTaxaDepreciacao());
+                    }
+                    if (ativoTangivelAtualizado.getPeriodoDepreciacao() != null) {
+                        ativoTangivel.setPeriodoDepreciacao(ativoTangivelAtualizado.getPeriodoDepreciacao());
                     }
 
                     // Save the updated AtivoTangivel entity
-                    updatedAtivoTangivel = repositorio.save(updatedAtivoTangivel);
+                    AtivoTangivel updatedAtivoTangivel = repositorio.save(ativoTangivel);
 
                     return new ResponseEntity<>(updatedAtivoTangivel, HttpStatus.OK);
                 }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

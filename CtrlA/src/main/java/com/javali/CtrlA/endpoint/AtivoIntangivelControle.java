@@ -76,7 +76,7 @@ public class AtivoIntangivelControle {
                         ativo.setIdNotaFiscal(notaFiscal);
                     }
 
-                    // Create a custom BeanUtilsBean that ignores null properties
+                    // Copy the properties from ativoIntangivelAtualizado.getAtivo() to ativo
                     BeanUtilsBean notNull = new BeanUtilsBean() {
                         @Override
                         public void copyProperty(Object dest, String name, Object value)
@@ -86,7 +86,6 @@ public class AtivoIntangivelControle {
                         }
                     };
 
-                    // Copy the properties from ativoIntangivelAtualizado.getAtivo() to ativo
                     try {
                         notNull.copyProperties(ativo, ativoIntangivelAtualizado.getAtivo());
                     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -96,19 +95,18 @@ public class AtivoIntangivelControle {
                     // Save the Ativo entity
                     ativo = ativoRepositorio.save(ativo);
 
-                    // Create a new AtivoIntangivel object and set the updated Ativo entity to it
-                    AtivoIntangivel updatedAtivoIntangivel = new AtivoIntangivel();
-                    updatedAtivoIntangivel.setAtivo(ativo);
-
-                    // Copy the properties from ativoIntangivelAtualizado to updatedAtivoIntangivel
-                    try {
-                        notNull.copyProperties(updatedAtivoIntangivel, ativoIntangivelAtualizado);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException("Error copying properties", e);
+                    // Update the AtivoIntangivel entity
+                    if (ativoIntangivelAtualizado.getDataExpiracao() != null) {
+                        ativoIntangivel.setDataExpiracao(ativoIntangivelAtualizado.getDataExpiracao());
+                    }
+                    if (ativoIntangivelAtualizado.getTaxaAmortizacao() != null) {
+                        ativoIntangivel.setTaxaAmortizacao(ativoIntangivelAtualizado.getTaxaAmortizacao());
+                    }
+                    if (ativoIntangivelAtualizado.getPeriodoAmortizacao() != null) {
+                        ativoIntangivel.setPeriodoAmortizacao(ativoIntangivelAtualizado.getPeriodoAmortizacao());
                     }
 
-                    // Save the updated AtivoIntangivel entity
-                    updatedAtivoIntangivel = repositorio.save(updatedAtivoIntangivel);
+                    AtivoIntangivel updatedAtivoIntangivel = repositorio.save(ativoIntangivel);
 
                     return new ResponseEntity<>(updatedAtivoIntangivel, HttpStatus.OK);
                 }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
