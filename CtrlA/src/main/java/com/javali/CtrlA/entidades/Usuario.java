@@ -47,6 +47,10 @@ public class Usuario extends RepresentationModel<Usuario> {
     @Column(name = "email", length = 100)
     private String email;
 
+    @Size(max = 100)
+    @Column(name = "status", length = 100)
+    private String status;
+
 //    @JsonManagedReference
 //    @JsonBackReference
 //    @OneToMany(mappedBy = "idResponsavel")
