@@ -38,21 +38,34 @@ public class ManutencaoControle {
         return new ResponseEntity<>(manutencao, HttpStatus.CREATED);
     }
 
+    @GetMapping("/listagemTodos")
+    public ResponseEntity<List<Manutencao>> listarTodasManutencoes() {
+        List<Manutencao> todasManutencoes = repositorio.findAll();
+
+        if (todasManutencoes.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+//        hateoas.adicionarLink(todasManutencoes);
+            return new ResponseEntity<>(todasManutencoes, HttpStatus.OK);
+        }
+    }
+
+
     @GetMapping("/listagem/{id_ativo}")
     public ResponseEntity<List<Manutencao>> obterManutencoes(@PathVariable long id_ativo) {
         List<Manutencao> todasManutencoes = repositorio.findAll();
-        
+
         List<Manutencao> manutencoes = new ArrayList<Manutencao>();
         for (Manutencao m : todasManutencoes) {
-        	if (m.getAtivo().getId() == id_ativo) {
-        		manutencoes.add(m);
-        	}
+            if (m.getAtivo() != null && m.getAtivo().getId() == id_ativo) {
+                manutencoes.add(m);
+            }
         }
-        
+
         if (manutencoes.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-//            hateoas.adicionarLink(manutencoes);
+//        hateoas.adicionarLink(manutencoes);
             return new ResponseEntity<>(manutencoes, HttpStatus.OK);
         }
     }
