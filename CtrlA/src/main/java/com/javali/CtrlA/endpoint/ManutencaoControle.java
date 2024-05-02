@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.javali.CtrlA.repositorios.AtivoRepositorio;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.javali.CtrlA.entidades.Manutencao;
 //import com.javali.CtrlA.hateoas.ManutencaoHateoas;
 import com.javali.CtrlA.repositorios.ManutencaoRepositorio;
+import com.javali.CtrlA.entidades.Ativo;
 
 @RestController
 @RequestMapping("/manutencao")
@@ -28,15 +30,43 @@ public class ManutencaoControle {
     @Autowired
     private ManutencaoRepositorio repositorio;
 
+    @Autowired
+    private AtivoRepositorio ativoRepositorio;
+
 //    @Autowired
 //    private ManutencaoHateoas hateoas;
 
     @PostMapping("/cadastro")
     public ResponseEntity<Manutencao> criarManutencao(@RequestBody Manutencao novaManutencao) {
-    	Manutencao manutencao = repositorio.save(novaManutencao);
-//        hateoas.adicionarLink(manutencao);
-        return new ResponseEntity<>(manutencao, HttpStatus.CREATED);
+        // Verificar se o ativo está presente em `novaManutencao`
+        if (novaManutencao.getAtivo() == null) {
+            // Retornar resposta BAD_REQUEST se `Ativo` não estiver presente
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // Obter o ID do ativo de `novaManutencao`
+        Long idAtivo = novaManutencao.getAtivo().getId();
+
+        // Buscar o ativo correspondente usando o repositório de Ativo
+        Optional<Ativo> ativoOptional = ativoRepositorio.findById(idAtivo);
+
+        // Verificar se o ativo existe
+        if (!ativoOptional.isPresent()) {
+            // Se o ativo não for encontrado, retorne uma resposta de BAD_REQUEST
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // Associe o ativo à nova manutenção
+        novaManutencao.setAtivo(ativoOptional.get());
+
+        // Salve a nova manutenção com o ativo associado
+        Manutencao manutencaoSalva = repositorio.save(novaManutencao);
+
+        // Retorne a manutenção salva com status CREATED
+        return new ResponseEntity<>(manutencaoSalva, HttpStatus.CREATED);
     }
+
+
 
     @GetMapping("/listagemTodos")
     public ResponseEntity<List<Manutencao>> listarTodasManutencoes() {
