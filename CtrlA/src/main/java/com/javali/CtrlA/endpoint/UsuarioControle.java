@@ -1,5 +1,6 @@
 package com.javali.CtrlA.endpoint;
 
+import com.javali.CtrlA.adaptadores.UsuarioCadastrarAdaptador;
 import com.javali.CtrlA.componentes.UsuarioSelecionador;
 import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.entidades.UsuarioLogin;
@@ -31,10 +32,16 @@ public class UsuarioControle {
     private UsuarioSelecionador selecionador;
 
     @PostMapping("/cadastro")
-    public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario novoUsuario) {
-        Usuario usuario = repositorio.save(novoUsuario);
-        hateoas.adicionarLink(usuario);
-        return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+    public ResponseEntity<Usuario> criarUsuario(@RequestBody UsuarioCadastrarAdaptador novoUsuario) {
+    	try {
+    		Usuario usuario = novoUsuario.adaptar();
+    		repositorio.save(usuario);
+    		hateoas.adicionarLink(usuario);
+    		return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+    	} catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+        
     }
 
     @GetMapping("/listagemTodos")
