@@ -23,7 +23,7 @@ public class ConfiguracaoSeguranca{
 		return http.csrf(AbstractHttpConfigurer::disable)
 		        .cors(AbstractHttpConfigurer::disable)
 		        .authorizeHttpRequests(request -> {
-		          request.requestMatchers(HttpMethod.GET,rotasPublicas).permitAll();
+		          request.requestMatchers(rotasPublicas).permitAll();
 		        }).build();
 	}
 

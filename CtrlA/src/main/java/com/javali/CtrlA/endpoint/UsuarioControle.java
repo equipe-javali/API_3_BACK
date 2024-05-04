@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,15 +32,16 @@ public class UsuarioControle {
 
     @PostMapping("/cadastro")
     public ResponseEntity<Usuario> criarUsuario(@RequestBody UsuarioCadastrarAdaptador novoUsuario) {
-    	try {
+    	if (novoUsuario.getUsuario().getUsuariologin() != null) {
     		Usuario usuario = novoUsuario.adaptar();
     		repositorio.save(usuario);
     		hateoas.adicionarLink(usuario);
     		return new ResponseEntity<>(usuario, HttpStatus.CREATED);
-    	} catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	} else {
+            Usuario usuario = repositorio.save(novoUsuario.getUsuario());
+            hateoas.adicionarLink(usuario);
+            return new ResponseEntity<>(usuario, HttpStatus.CREATED);
     	}
-        
     }
 
     @GetMapping("/listagemTodos")

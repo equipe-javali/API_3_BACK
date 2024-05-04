@@ -57,7 +57,7 @@ public class Usuario extends RepresentationModel<Usuario> {
 //    private Set<Ativo> ativos = new LinkedHashSet<>();
 
     @JsonManagedReference
-    @OneToOne(mappedBy = "usuario")
+    @OneToOne(mappedBy = "usuario", cascade=CascadeType.PERSIST)
     private UsuarioLogin usuariologin;
 
 }
