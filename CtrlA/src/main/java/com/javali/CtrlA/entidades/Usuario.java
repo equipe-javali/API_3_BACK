@@ -3,6 +3,8 @@ package com.javali.CtrlA.entidades;
 import com.fasterxml.jackson.annotation.*;
 import com.javali.CtrlA.entidades.Ativo;
 import com.javali.CtrlA.entidades.UsuarioLogin;
+import com.javali.CtrlA.modelo.Perfil;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -59,5 +61,8 @@ public class Usuario extends RepresentationModel<Usuario> {
     @JsonManagedReference
     @OneToOne(mappedBy = "usuario", cascade=CascadeType.PERSIST)
     private UsuarioLogin usuariologin;
+    
+    @Column
+    private Perfil perfil;
 
 }

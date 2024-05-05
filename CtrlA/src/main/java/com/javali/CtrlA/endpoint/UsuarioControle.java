@@ -5,6 +5,7 @@ import com.javali.CtrlA.componentes.UsuarioSelecionador;
 import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.entidades.UsuarioLogin;
 import com.javali.CtrlA.hateoas.UsuarioHateoas;
+import com.javali.CtrlA.modelo.Perfil;
 import com.javali.CtrlA.repositorios.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,11 +35,14 @@ public class UsuarioControle {
     public ResponseEntity<Usuario> criarUsuario(@RequestBody UsuarioCadastrarAdaptador novoUsuario) {
     	if (novoUsuario.getUsuario().getUsuariologin() != null) {
     		Usuario usuario = novoUsuario.adaptar();
+    		usuario.setPerfil(Perfil.ADM);
     		repositorio.save(usuario);
     		hateoas.adicionarLink(usuario);
     		return new ResponseEntity<>(usuario, HttpStatus.CREATED);
     	} else {
-            Usuario usuario = repositorio.save(novoUsuario.getUsuario());
+            Usuario usuario = novoUsuario.getUsuario();
+            usuario.setPerfil(Perfil.DESTINATARIO);
+            repositorio.save(usuario);
             hateoas.adicionarLink(usuario);
             return new ResponseEntity<>(usuario, HttpStatus.CREATED);
     	}
