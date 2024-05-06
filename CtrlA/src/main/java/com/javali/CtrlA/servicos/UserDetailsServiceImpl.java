@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.javali.CtrlA.UserDetailsImpl;
+import com.javali.CtrlA.adaptadores.UserDetailsImpl;
 import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.entidades.UsuarioLogin;
 import com.javali.CtrlA.repositorios.UsuarioRepositorio;

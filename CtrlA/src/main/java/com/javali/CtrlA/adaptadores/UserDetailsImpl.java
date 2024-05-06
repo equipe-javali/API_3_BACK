@@ -1,4 +1,4 @@
-package com.javali.CtrlA;
+package com.javali.CtrlA.adaptadores;
 
 import java.util.ArrayList;
 import java.util.Collection;

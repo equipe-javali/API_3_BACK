@@ -12,6 +12,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/ativoIntangivel")
+@PreAuthorize("hasAnyAuthority('ADM')")
 public class AtivoIntangivelControle {
 
     @Autowired
