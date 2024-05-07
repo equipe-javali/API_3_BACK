@@ -1,14 +1,11 @@
 package com.javali.CtrlA.entidades;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.javali.CtrlA.entidades.Usuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.hateoas.RepresentationModel;
 
 @Getter

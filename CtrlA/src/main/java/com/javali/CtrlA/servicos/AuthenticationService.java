@@ -1,7 +1,5 @@
 package com.javali.CtrlA.servicos;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.javali.CtrlA.adaptadores.UsuarioCadastrarAdaptador;
 import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.modelos.ModeloAutenticacao;
 import com.javali.CtrlA.repositorios.UsuarioRepositorio;

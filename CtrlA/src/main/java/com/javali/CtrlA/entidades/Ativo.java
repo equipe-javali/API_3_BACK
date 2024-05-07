@@ -1,19 +1,14 @@
 package com.javali.CtrlA.entidades;
 
 import com.fasterxml.jackson.annotation.*;
-import com.javali.CtrlA.entidades.NotaFiscal;
-import com.javali.CtrlA.entidades.Usuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Set;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
