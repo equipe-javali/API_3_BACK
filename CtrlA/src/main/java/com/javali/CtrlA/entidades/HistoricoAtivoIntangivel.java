@@ -1,8 +1,5 @@
 package com.javali.CtrlA.entidades;
 
-import com.javali.CtrlA.entidades.Ativo;
-import com.javali.CtrlA.entidades.AtivoIntangivel;
-import com.javali.CtrlA.entidades.NotaFiscal;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

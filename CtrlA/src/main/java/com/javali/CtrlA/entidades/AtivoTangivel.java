@@ -1,7 +1,6 @@
 package com.javali.CtrlA.entidades;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.javali.CtrlA.entidades.Ativo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

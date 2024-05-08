@@ -1,24 +1,27 @@
 package com.javali.CtrlA.endpoint;
 
-import com.javali.CtrlA.componentes.UsuarioSelecionador;
+import com.javali.CtrlA.adaptadores.UsuarioCadastrarAdaptador;
+import com.javali.CtrlA.componentes.UsuarioSelecionadorEmail;
 import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.entidades.UsuarioLogin;
 import com.javali.CtrlA.hateoas.UsuarioHateoas;
+import com.javali.CtrlA.modelo.Perfil;
 import com.javali.CtrlA.repositorios.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuario")
+@PreAuthorize("hasAnyAuthority('ADM')")
 public class UsuarioControle {
 
     @Autowired
@@ -27,14 +30,21 @@ public class UsuarioControle {
     @Autowired
     private UsuarioHateoas hateoas;
 
-    @Autowired
-    private UsuarioSelecionador selecionador;
-
     @PostMapping("/cadastro")
-    public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario novoUsuario) {
-        Usuario usuario = repositorio.save(novoUsuario);
-        hateoas.adicionarLink(usuario);
-        return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+    public ResponseEntity<Usuario> criarUsuario(@RequestBody UsuarioCadastrarAdaptador novoUsuario) {
+    	if (novoUsuario.getUsuario().getUsuariologin() != null) {
+    		Usuario usuario = novoUsuario.adaptar();
+    		usuario.setPerfil(Perfil.ADM);
+    		repositorio.save(usuario);
+    		hateoas.adicionarLink(usuario);
+    		return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+    	} else {
+            Usuario usuario = novoUsuario.getUsuario();
+            usuario.setPerfil(Perfil.DESTINATARIO);
+            repositorio.save(usuario);
+            hateoas.adicionarLink(usuario);
+            return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+    	}
     }
 
     @GetMapping("/listagemTodos")
