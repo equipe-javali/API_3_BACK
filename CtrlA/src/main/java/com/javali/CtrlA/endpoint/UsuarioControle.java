@@ -21,7 +21,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuario")
-@PreAuthorize("hasAnyAuthority('ADM')")
 public class UsuarioControle {
 
     @Autowired
@@ -32,22 +31,23 @@ public class UsuarioControle {
 
     @PostMapping("/cadastro")
     public ResponseEntity<Usuario> criarUsuario(@RequestBody UsuarioCadastrarAdaptador novoUsuario) {
-    	if (novoUsuario.getUsuario().getUsuariologin() != null) {
-    		Usuario usuario = novoUsuario.adaptar();
-    		usuario.setPerfil(Perfil.ADM);
-    		repositorio.save(usuario);
-    		hateoas.adicionarLink(usuario);
-    		return new ResponseEntity<>(usuario, HttpStatus.CREATED);
-    	} else {
+        if (novoUsuario.getUsuario().getUsuariologin() != null) {
+            Usuario usuario = novoUsuario.adaptar();
+            usuario.setPerfil(Perfil.ADM);
+            repositorio.save(usuario);
+            hateoas.adicionarLink(usuario);
+            return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+        } else {
             Usuario usuario = novoUsuario.getUsuario();
             usuario.setPerfil(Perfil.DESTINATARIO);
             repositorio.save(usuario);
             hateoas.adicionarLink(usuario);
             return new ResponseEntity<>(usuario, HttpStatus.CREATED);
-    	}
+        }
     }
 
     @GetMapping("/listagemTodos")
+    @PreAuthorize("hasAnyAuthority('ADM')")
     public ResponseEntity<List<Usuario>> obterUsuarios() {
         List<Usuario> usuarios = repositorio.findAll();
         if (usuarios.isEmpty()) {
@@ -57,18 +57,19 @@ public class UsuarioControle {
             return new ResponseEntity<>(usuarios, HttpStatus.OK);
         }
     }
-    
+
     @GetMapping("/listagemTodosAdm")
+    @PreAuthorize("hasAnyAuthority('ADM')")
     public ResponseEntity<List<Usuario>> obterUsuariosAdm() {
         List<Usuario> todosUsuarios = repositorio.findAll();
         List<Usuario> usuarios = new ArrayList<Usuario>();
         for (Usuario u : todosUsuarios) {
-        	if (u.getUsuariologin() != null) {
-        		UsuarioLogin login = u.getUsuariologin();
-        		login.setSenha("SenhaSuperSecreta");
-        		u.setUsuariologin(login);
-        		usuarios.add(u);
-        	}
+            if (u.getUsuariologin() != null) {
+                UsuarioLogin login = u.getUsuariologin();
+                login.setSenha("SenhaSuperSecreta");
+                u.setUsuariologin(login);
+                usuarios.add(u);
+            }
         }
         if (usuarios.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -79,6 +80,7 @@ public class UsuarioControle {
     }
 
     @GetMapping("/listagem/{id}")
+    @PreAuthorize("hasAnyAuthority('ADM')")
     public ResponseEntity<Usuario> obterUsuario(@PathVariable long id) {
         Optional<Usuario> usuarioOptional = repositorio.findById(id);
         return usuarioOptional.map(usuario -> {
@@ -88,14 +90,15 @@ public class UsuarioControle {
     }
 
     @PutMapping("/atualizacao/{id}")
+    @PreAuthorize("hasAnyAuthority('ADM')")
     public ResponseEntity<?> atualizarUsuario(@PathVariable long id, @RequestBody Usuario usuarioAtualizado) {
         return repositorio.findById(id)
                 .map(usuario -> {
-                    BeanUtilsBean notNull=new BeanUtilsBean(){
+                    BeanUtilsBean notNull = new BeanUtilsBean() {
                         @Override
                         public void copyProperty(Object dest, String name, Object value)
                                 throws IllegalAccessException, InvocationTargetException {
-                            if(value!=null){
+                            if (value != null) {
                                 super.copyProperty(dest, name, value);
                             }
                         }
@@ -113,6 +116,7 @@ public class UsuarioControle {
     }
 
     @DeleteMapping("/exclusao/{id}")
+    @PreAuthorize("hasAnyAuthority('ADM')")
     public ResponseEntity<Void> deletarUsuario(@PathVariable long id) {
         Optional<Usuario> usuarioOptional = repositorio.findById(id);
         if (!usuarioOptional.isPresent()) {

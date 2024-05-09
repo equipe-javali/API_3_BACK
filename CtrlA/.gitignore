@@ -35,3 +35,4 @@ build/
 **/src/main/resources/**
 !/src/main/resources/.gitkeep
 /bin/
+/.apt_generated_tests/
