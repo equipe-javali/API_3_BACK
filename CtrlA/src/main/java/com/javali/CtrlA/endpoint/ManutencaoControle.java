@@ -10,6 +10,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import com.javali.CtrlA.entidades.Ativo;
 
 @RestController
 @RequestMapping("/manutencao")
+@PreAuthorize("hasAnyAuthority('ADM')")
 public class ManutencaoControle {
     @Autowired
     private ManutencaoRepositorio repositorio;
@@ -102,6 +104,7 @@ public class ManutencaoControle {
 
     @PutMapping("/atualizacao/{id}")
     public ResponseEntity<?> atualizarManutencao(@PathVariable long id, @RequestBody Manutencao manutencaoAtualizado) {
+    	System.out.println(repositorio.findAll());
         return repositorio.findById(id)
                 .map(manutencao -> {
                     BeanUtilsBean notNull=new BeanUtilsBean(){
