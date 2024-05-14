@@ -31,13 +31,23 @@ public class UsuarioControle {
 
     @PostMapping("/cadastro")
     public ResponseEntity<Usuario> criarUsuario(@RequestBody UsuarioCadastrarAdaptador novoUsuario) {
-        if (novoUsuario.getUsuario().getUsuariologin() != null) {
-            Usuario usuario = novoUsuario.adaptar();
-            usuario.setPerfil(Perfil.ADM);
-            repositorio.save(usuario);
-            hateoas.adicionarLink(usuario);
-            return new ResponseEntity<>(usuario, HttpStatus.CREATED);
-        } else {
+        String email = novoUsuario.getUsuario().getEmail();
+    	String cpf = novoUsuario.getUsuario().getCpf();
+    	    	
+    	List<Usuario> usuarios = repositorio.findAll();
+    	for (Usuario u : usuarios) {
+    		if (u.getEmail().equals(email) || u.getCpf().equals(cpf)) {
+    			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    		}
+    	}
+
+    	if (novoUsuario.getUsuario().getUsuariologin() != null) {
+    		Usuario usuario = novoUsuario.adaptar();
+    		usuario.setPerfil(Perfil.ADM);
+    		repositorio.save(usuario);
+    		hateoas.adicionarLink(usuario);
+    		return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+    	} else {
             Usuario usuario = novoUsuario.getUsuario();
             usuario.setPerfil(Perfil.DESTINATARIO);
             repositorio.save(usuario);
