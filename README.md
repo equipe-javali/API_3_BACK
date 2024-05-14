@@ -8,6 +8,14 @@ EXEMPLO
 
 "1.1 - Adicição da rota de cadastro de ativo"
 
+EXCEÇÕES DE NOME DE COMMIT
+
+"GERAL" - Adições que não está em uma tarefa, mais ajudará o ambiente de trabalho
+
+"COR." - Correções de códigos que não estão funcionando
+
+"BUG" - Correção de códigos que estão funcionando, porém está tendo algum efeito colateral indesejado
+
 ## Padrão de branch
 "{numero da tarefa referente a branch}"
 
