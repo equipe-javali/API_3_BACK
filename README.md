@@ -16,3 +16,5 @@ EXEMPLO
 "1.0"
 
 ## Descrição das branches
+
+* 12: Verificação de e-mail e cpf para que não hajam duplicidades
