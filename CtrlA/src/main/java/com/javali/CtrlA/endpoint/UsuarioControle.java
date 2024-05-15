@@ -84,7 +84,8 @@ public class UsuarioControle {
     public ResponseEntity<Usuario> obterUsuario(@PathVariable long id) {
         Optional<Usuario> usuarioOptional = repositorio.findById(id);
         return usuarioOptional.map(usuario -> {
-            hateoas.adicionarLink(usuario);
+        	usuario.setUsuariologin(null);
+        	hateoas.adicionarLink(usuario);
             return new ResponseEntity<>(usuario, HttpStatus.OK);
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
