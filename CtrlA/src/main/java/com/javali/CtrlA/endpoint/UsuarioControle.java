@@ -18,6 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/usuario")
@@ -53,6 +55,9 @@ public class UsuarioControle {
         if (usuarios.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
+        	for(Usuario u : usuarios) {
+        		u.setUsuariologin(null);
+        	}
             hateoas.adicionarLink(usuarios);
             return new ResponseEntity<>(usuarios, HttpStatus.OK);
         }
