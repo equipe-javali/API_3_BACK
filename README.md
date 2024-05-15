@@ -26,3 +26,5 @@ EXEMPLO
 ## Descrição das branches
 
 * 12: Verificação de e-mail e cpf para que não hajam duplicidades
+
+* 15: Fazer com que o back não envie a senha de usuários
