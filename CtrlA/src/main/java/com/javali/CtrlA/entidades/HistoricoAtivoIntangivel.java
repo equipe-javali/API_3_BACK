@@ -17,12 +17,15 @@ public class HistoricoAtivoIntangivel extends RepresentationModel<HistoricoAtivo
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
-    @Column(name = "id_ativo")
-    private Long idAtivo;
+    @Column(name = "data_alteracao")
+    private LocalDate dataAlteracao;
 
-    // Fields copied from AtivoIntangivel
+    // Fields from AtivoIntangivel
+    @Column(name = "id_ativo_intangivel")
+    private Long idAtivoIntangivel;
+
     @Column(name = "data_expiracao")
     private LocalDate dataExpiracao;
 
@@ -33,7 +36,7 @@ public class HistoricoAtivoIntangivel extends RepresentationModel<HistoricoAtivo
     @Column(name = "periodo_amortizacao", length = 30)
     private String periodoAmortizacao;
 
-    // Fields copied from Ativo
+    // Fields from Ativo
     @Size(max = 100)
     @Column(name = "nome", length = 100)
     private String nome;
@@ -77,39 +80,40 @@ public class HistoricoAtivoIntangivel extends RepresentationModel<HistoricoAtivo
     @Column(name = "campos_personalizados", length = Integer.MAX_VALUE)
     private String camposPersonalizados;
 
-    // Fields copied from NotaFiscal
+    // Fields from Usuario
+    @Size(max = 100)
+    @Column(name = "nome_responsavel", length = 100)
+    private String nomeResponsavel;
+
+    @Size(max = 11)
+    @Column(name = "cpf_responsavel", length = 11)
+    private String cpfResponsavel;
+
+    @Column(name = "nascimento_responsavel")
+    private LocalDate nascimentoResponsavel;
+
+    @Size(max = 20)
+    @Column(name = "departamento_responsavel", length = 20)
+    private String departamentoResponsavel;
+
+    @Size(max = 20)
+    @Column(name = "telefone_responsavel", length = 20)
+    private String telefoneResponsavel;
+
+    @Size(max = 100)
+    @Column(name = "email_responsavel", length = 100)
+    private String emailResponsavel;
+
+    @Size(max = 100)
+    @Column(name = "status_responsavel", length = 100)
+    private String statusResponsavel;
+
     @Column(name = "documento", length = Integer.MAX_VALUE)
-    private String documentoNotaFiscal;
+    private String documento;
 
     @Size(max = 30)
     @Column(name = "tipo_documento", length = 30)
-    private String tipoDocumentoNotaFiscal;
+    private String tipoDocumento;
 
-    // Fields copied from Usuario
-    @Size(max = 100)
-    @Column(name = "nome_usuario", length = 100)
-    private String nomeUsuario;
 
-    @Size(max = 11)
-    @Column(name = "cpf_usuario", length = 11)
-    private String cpfUsuario;
-
-    @Column(name = "nascimento_usuario")
-    private LocalDate nascimentoUsuario;
-
-    @Size(max = 20)
-    @Column(name = "departamento_usuario", length = 20)
-    private String departamentoUsuario;
-
-    @Size(max = 20)
-    @Column(name = "telefone_usuario", length = 20)
-    private String telefoneUsuario;
-
-    @Size(max = 100)
-    @Column(name = "email_usuario", length = 100)
-    private String emailUsuario;
-
-    @Size(max = 100)
-    @Column(name = "status_usuario", length = 100)
-    private String statusUsuario;
 }
