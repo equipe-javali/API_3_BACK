@@ -19,13 +19,21 @@ public class HistoricoAtivoIntangivel extends RepresentationModel<HistoricoAtivo
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "\"id_ativo_Intangivel\"")
-    private AtivoIntangivel idAtivoIntangivel;
+    @Column(name = "id_ativo")
+    private Long idAtivo;
 
-    @Column(name = "data_alteracao")
-    private LocalDate dataAlteracao;
+    // Fields copied from AtivoIntangivel
+    @Column(name = "data_expiracao")
+    private LocalDate dataExpiracao;
 
+    @Column(name = "taxa_amortizacao", precision = 10, scale = 2)
+    private BigDecimal taxaAmortizacao;
+
+    @Size(max = 30)
+    @Column(name = "periodo_amortizacao", length = 30)
+    private String periodoAmortizacao;
+
+    // Fields copied from Ativo
     @Size(max = 100)
     @Column(name = "nome", length = 100)
     private String nome;
@@ -33,21 +41,12 @@ public class HistoricoAtivoIntangivel extends RepresentationModel<HistoricoAtivo
     @Column(name = "custo_aquisicao", precision = 10, scale = 2)
     private BigDecimal custoAquisicao;
 
-    @Column(name = "data_aquisicao")
-    private LocalDate dataAquisicao;
-
-    @Column(name = "data_expiracao")
-    private LocalDate dataExpiracao;
-
-    @Column(name = "numero_identificacao")
-    private Long numeroIdentificacao;
-
-    @Size(max = 50)
-    @Column(name = "tipo", length = 50)
+    @Size(max = 20)
+    @Column(name = "tipo", length = 20)
     private String tipo;
 
-    @Size(max = 50)
-    @Column(name = "tag", length = 50)
+    @Size(max = 20)
+    @Column(name = "tag", length = 20)
     private String tag;
 
     @Column(name = "grau_importancia")
@@ -57,23 +56,60 @@ public class HistoricoAtivoIntangivel extends RepresentationModel<HistoricoAtivo
     @Column(name = "status", length = 50)
     private String status;
 
-    @Column(name = "ultima_atualizacao")
-    private LocalDate ultimaAtualizacao;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_responsavel")
-    private Ativo idResponsavel;
-
     @Size(max = 500)
     @Column(name = "descricao", length = 500)
     private String descricao;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nota_fiscal")
-    private NotaFiscal idNotaFiscal;
+    @Size(max = 50)
+    @Column(name = "numero_identificacao", length = 50)
+    private String numeroIdentificacao;
+
+    @Column(name = "ultima_atualizacao")
+    private LocalDate ultimaAtualizacao;
 
     @Size(max = 100)
     @Column(name = "marca", length = 100)
     private String marca;
 
+    @Column(name = "data_aquisicao")
+    private LocalDate dataAquisicao;
+
+    @Column(name = "campos_personalizados", length = Integer.MAX_VALUE)
+    private String camposPersonalizados;
+
+    // Fields copied from NotaFiscal
+    @Column(name = "documento", length = Integer.MAX_VALUE)
+    private String documentoNotaFiscal;
+
+    @Size(max = 30)
+    @Column(name = "tipo_documento", length = 30)
+    private String tipoDocumentoNotaFiscal;
+
+    // Fields copied from Usuario
+    @Size(max = 100)
+    @Column(name = "nome_usuario", length = 100)
+    private String nomeUsuario;
+
+    @Size(max = 11)
+    @Column(name = "cpf_usuario", length = 11)
+    private String cpfUsuario;
+
+    @Column(name = "nascimento_usuario")
+    private LocalDate nascimentoUsuario;
+
+    @Size(max = 20)
+    @Column(name = "departamento_usuario", length = 20)
+    private String departamentoUsuario;
+
+    @Size(max = 20)
+    @Column(name = "telefone_usuario", length = 20)
+    private String telefoneUsuario;
+
+    @Size(max = 100)
+    @Column(name = "email_usuario", length = 100)
+    private String emailUsuario;
+
+    @Size(max = 100)
+    @Column(name = "status_usuario", length = 100)
+    private String statusUsuario;
 }

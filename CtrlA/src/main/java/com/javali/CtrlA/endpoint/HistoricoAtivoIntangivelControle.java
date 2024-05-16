@@ -2,24 +2,38 @@ package com.javali.CtrlA.endpoint;
 
 import com.javali.CtrlA.entidades.HistoricoAtivoIntangivel;
 import com.javali.CtrlA.repositorios.HistoricoAtivoIntangivelRepositorio;
+import com.javali.CtrlA.servicos.HistoricoAtivoIntangivelServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.annotation.DependsOn;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
+
+
 @RestController
 @RequestMapping("/historicoAtivoIntangivel")
+@DependsOn("historicoAtivoIntangivelServico")
 public class HistoricoAtivoIntangivelControle {
 
     @Autowired
     private HistoricoAtivoIntangivelRepositorio repositorio;
 
+    @Autowired
+    private HistoricoAtivoIntangivelServico historicoServico;
+
     @PostMapping("/cadastro")
-    public ResponseEntity<HistoricoAtivoIntangivel> criarHistoricoAtivoIntangivel(@RequestBody HistoricoAtivoIntangivel novoHistoricoAtivoIntangivel) {
-        HistoricoAtivoIntangivel historicoAtivoIntangivel = repositorio.save(novoHistoricoAtivoIntangivel);
+    public ResponseEntity<HistoricoAtivoIntangivel> criarHistoricoAtivoIntangivel(@RequestBody HistoricoAtivoIntangivelRequest request) {
+        HistoricoAtivoIntangivel historicoAtivoIntangivel = historicoServico.createHistorico(
+                request.getIdAtivo(),
+                request.getIdAtivoIntangivel(),
+                request.getIdNotaFiscal(),
+                request.getIdUsuario()
+        );
         return new ResponseEntity<>(historicoAtivoIntangivel, HttpStatus.CREATED);
     }
 
