@@ -28,3 +28,7 @@ EXEMPLO
 * 12: Verificação de e-mail e cpf para que não hajam duplicidades
 
 * 15: Fazer com que o back não envie a senha de usuários
+
+* 2.1: Cadastro de histórico de ativos intangível
+  
+* 1.1: Cadastro de histórico de ativos tangíveis
