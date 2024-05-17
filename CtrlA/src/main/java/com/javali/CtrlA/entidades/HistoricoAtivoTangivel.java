@@ -19,62 +19,112 @@ public class HistoricoAtivoTangivel extends RepresentationModel<HistoricoAtivoTa
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_ativo_tangivel")
-    private AtivoTangivel idAtivoTangivel;
-
     @Column(name = "data_alteracao")
     private LocalDate dataAlteracao;
 
-    @Size(max = 100)
-    @Column(name = "nome", length = 100)
-    private String nome;
+    // Campos de Ativo
+    @Column(name = "id_ativo")
+    private Long idAtivo;
 
     @Size(max = 100)
-    @Column(name = "marca", length = 100)
-    private String marca;
+    @Column(name = "nome_ativo", length = 100)
+    private String nomeAtivo;
 
-    @Column(name = "custo_aquisicao", precision = 2, scale = 10)
-    private BigDecimal custoAquisicao;
+    @Column(name = "custo_aquisicao_ativo", precision = 10, scale = 2)
+    private BigDecimal custoAquisicaoAtivo;
 
-    @Column(name = "garantia")
-    private LocalDate garantia;
+    @Size(max = 20)
+    @Column(name = "tipo_ativo", length = 20)
+    private String tipoAtivo;
 
-    @Column(name = "data_aquisicao")
-    private LocalDate dataAquisicao;
+    @Size(max = 20)
+    @Column(name = "tag_ativo", length = 20)
+    private String tagAtivo;
 
-    @Size(max = 50)
-    @Column(name = "numero_identificacao", length = 50)
-    private String numeroIdentificacao;
-
-    @Column(name = "ultima_atualizacao")
-    private LocalDate ultimaAtualizacao;
+    @Column(name = "grau_importancia_ativo")
+    private Long grauImportanciaAtivo;
 
     @Size(max = 50)
-    @Column(name = "tipo", length = 50)
-    private String tipo;
-
-    @Size(max = 50)
-    @Column(name = "tag", length = 50)
-    private String tag;
-
-    @Column(name = "grau_importancia")
-    private Long grauImportancia;
-
-    @Size(max = 50)
-    @Column(name = "status", length = 50)
-    private String status;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_responsavel")
-    private Ativo idResponsavel;
+    @Column(name = "status_ativo", length = 50)
+    private String statusAtivo;
 
     @Size(max = 500)
-    @Column(name = "descricao", length = 500)
-    private String descricao;
+    @Column(name = "descricao_ativo", length = 500)
+    private String descricaoAtivo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nota_fiscal")
-    private NotaFiscal idNotaFiscal;
+    @Size(max = 50)
+    @Column(name = "numero_identificacao_ativo", length = 50)
+    private String numeroIdentificacaoAtivo;
+
+    @Column(name = "ultima_atualizacao_ativo")
+    private LocalDate ultimaAtualizacaoAtivo;
+
+    @Size(max = 100)
+    @Column(name = "marca_ativo", length = 100)
+    private String marcaAtivo;
+
+    @Column(name = "data_aquisicao_ativo")
+    private LocalDate dataAquisicaoAtivo;
+
+    @Column(name = "campos_personalizados_ativo", length = Integer.MAX_VALUE)
+    private String camposPersonalizadosAtivo;
+
+    // Campos de AtivoTangivel
+    @Column(name = "id_ativo_tangivel")
+    private Long idAtivoTangivel;
+
+    @Column(name = "garantia__ativo_tangivel")
+    private LocalDate garantiaAtivoTangivel;
+
+    @Column(name = "taxa_depreciacao_ativo_tangivel", precision = 10, scale = 2)
+    private BigDecimal taxaDepreciacaoAtivoTangivel;
+
+    @Size(max = 30)
+    @Column(name = "periodo_depreciacao_ativo_tangivel", length = 30)
+    private String periodoDepreciacaoAtivoTangivel;
+
+
+    // Campos de Usuario
+    @Column(name = "id_usuario")
+    private Long idUsuario;
+
+    @Size(max = 100)
+    @Column(name = "nome_usuario", length = 100)
+    private String nomeUsuario;
+
+    @Size(max = 11)
+    @Column(name = "cpf_usuario", length = 11)
+    private String cpfUsuario;
+
+    @Column(name = "nascimento_usuario")
+    private LocalDate nascimentoUsuario;
+
+    @Size(max = 20)
+    @Column(name = "departamento_usuario", length = 20)
+    private String departamentoUsuario;
+
+    @Size(max = 20)
+    @Column(name = "telefone_usuario", length = 20)
+    private String telefoneUsuario;
+
+    @Size(max = 100)
+    @Column(name = "email_usuario", length = 100)
+    private String emailUsuario;
+
+    @Size(max = 100)
+    @Column(name = "status_usuario", length = 100)
+    private String statusUsuario;
+
+    // Campos de NotaFiscal
+    @Column(name = "id_nota_fiscal")
+    private Long idNotaFiscal;
+
+    @Column(name = "documento_nota_fiscal", length = Integer.MAX_VALUE)
+    private String documentoNotaFiscal;
+
+    @Size(max = 30)
+    @Column(name = "tipo_documento_nota_fiscal", length = 30)
+    private String tipoDocumentoNotaFiscal;
+
 
 }

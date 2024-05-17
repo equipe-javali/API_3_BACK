@@ -1,7 +1,12 @@
 package com.javali.CtrlA.endpoint;
 
-import com.javali.CtrlA.entidades.HistoricoAtivoTangivel;
+import com.javali.CtrlA.entidades.*;
+import com.javali.CtrlA.repositorios.AtivointangivelRepositorio;
+import com.javali.CtrlA.repositorios.AtivotangivelRepositorio;
+import com.javali.CtrlA.repositorios.HistoricoAtivoIntangivelRepositorio;
 import com.javali.CtrlA.repositorios.HistoricoAtivoTangivelRepositorio;
+import com.javali.CtrlA.servicos.HistoricoAtivoIntangivelServico;
+import com.javali.CtrlA.servicos.HistoricoAtivoTangivelServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +20,17 @@ import java.util.Optional;
 public class HistoricoAtivoTangivelControle {
 
     @Autowired
+    private HistoricoAtivoTangivelServico historicoServico;
+
+    @Autowired
+    private AtivotangivelRepositorio ativoTangivelRepositorio;
+
+    @Autowired
     private HistoricoAtivoTangivelRepositorio repositorio;
 
     @PostMapping("/cadastro")
-    public ResponseEntity<HistoricoAtivoTangivel> criarHistoricoAtivoTangivel(@RequestBody HistoricoAtivoTangivel novoHistoricoAtivoTangivel) {
-        HistoricoAtivoTangivel historicoAtivoTangivel = repositorio.save(novoHistoricoAtivoTangivel);
-        return new ResponseEntity<>(historicoAtivoTangivel, HttpStatus.CREATED);
+    public ResponseEntity<HistoricoAtivoTangivel> criarHistoricoAtivoTangivel(@RequestBody HistoricoAtivoTangivelRequest request) {
+        return historicoServico.createHistorico(request);
     }
 
     @GetMapping("/listagemTodos")

@@ -58,21 +58,25 @@ public class HistoricoAtivoIntangivelServico {
 
 
         // Campos de Usuario
-        historicoAtivoIntangivel.setIdUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getId());
-        historicoAtivoIntangivel.setNomeUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getNome());
-        historicoAtivoIntangivel.setCpfUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getCpf());
-        historicoAtivoIntangivel.setNascimentoUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getNascimento());
-        historicoAtivoIntangivel.setDepartamentoUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getDepartamento());
-        historicoAtivoIntangivel.setTelefoneUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getTelefone());
-        historicoAtivoIntangivel.setEmailUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getEmail());
-        historicoAtivoIntangivel.setStatusUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getStatus());
+        if (ativoIntangivel.getAtivo().getIdResponsavel() != null) {
+            historicoAtivoIntangivel.setIdUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getId());
+            historicoAtivoIntangivel.setNomeUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getNome());
+            historicoAtivoIntangivel.setCpfUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getCpf());
+            historicoAtivoIntangivel.setNascimentoUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getNascimento());
+            historicoAtivoIntangivel.setDepartamentoUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getDepartamento());
+            historicoAtivoIntangivel.setTelefoneUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getTelefone());
+            historicoAtivoIntangivel.setEmailUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getEmail());
+            historicoAtivoIntangivel.setStatusUsuario(ativoIntangivel.getAtivo().getIdResponsavel().getStatus());
+        }
 
         // Campos de NotaFiscal
-        historicoAtivoIntangivel.setIdNotaFiscal(ativoIntangivel.getAtivo().getIdNotaFiscal().getId());
-        historicoAtivoIntangivel.setDocumentoNotaFiscal(ativoIntangivel.getAtivo().getIdNotaFiscal().getDocumento());
-        historicoAtivoIntangivel.setTipoDocumentoNotaFiscal(ativoIntangivel.getAtivo().getIdNotaFiscal().getTipoDocumento());
+        if (ativoIntangivel.getAtivo().getIdNotaFiscal() != null) {
+            historicoAtivoIntangivel.setIdNotaFiscal(ativoIntangivel.getAtivo().getIdNotaFiscal().getId());
+            historicoAtivoIntangivel.setDocumentoNotaFiscal(ativoIntangivel.getAtivo().getIdNotaFiscal().getDocumento());
+            historicoAtivoIntangivel.setTipoDocumentoNotaFiscal(ativoIntangivel.getAtivo().getIdNotaFiscal().getTipoDocumento());
+        }
 
-        // Save the new HistoricoAtivoIntangivel
+        // Salvar o novo HistoricoAtivoIntangivel
         historicoAtivoIntangivel = historicoRepositorio.save(historicoAtivoIntangivel);
 
         return new ResponseEntity<>(historicoAtivoIntangivel, HttpStatus.CREATED);
