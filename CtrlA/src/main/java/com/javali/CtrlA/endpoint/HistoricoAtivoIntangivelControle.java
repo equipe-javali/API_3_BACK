@@ -31,33 +31,8 @@ public class HistoricoAtivoIntangivelControle {
     private HistoricoAtivoIntangivelRepositorio repositorio;
 
     @PostMapping("/cadastro")
-    public ResponseEntity<HistoricoAtivoIntangivel> criarHistoricoAtivoIntangivel(@RequestBody HistoricoAtivoIntangivelRequest request) throws InvocationTargetException, IllegalAccessException {
-        AtivoIntangivel ativoIntangivel = ativoIntangivelRepositorio.findById(request.getIdAtivoIntangivel()).orElse(null);
-        if (ativoIntangivel == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        // Create and save the HistoricoAtivoIntangivel
-        HistoricoAtivoIntangivel historicoAtivoIntangivel = historicoServico.createHistorico(ativoIntangivel);
-
-        // Set the idAtivoIntangivel field
-        historicoAtivoIntangivel.setIdAtivoIntangivel(ativoIntangivel.getId());
-
-        // Set the fields from AtivoIntangivel or Ativo
-        historicoAtivoIntangivel.setNomeResponsavel(ativoIntangivel.getAtivo().getIdResponsavel().getNome());
-        historicoAtivoIntangivel.setCpfResponsavel(ativoIntangivel.getAtivo().getIdResponsavel().getCpf());
-        historicoAtivoIntangivel.setNascimentoResponsavel(ativoIntangivel.getAtivo().getIdResponsavel().getNascimento());
-        historicoAtivoIntangivel.setDepartamentoResponsavel(ativoIntangivel.getAtivo().getIdResponsavel().getDepartamento());
-        historicoAtivoIntangivel.setTelefoneResponsavel(ativoIntangivel.getAtivo().getIdResponsavel().getTelefone());
-        historicoAtivoIntangivel.setEmailResponsavel(ativoIntangivel.getAtivo().getIdResponsavel().getEmail());
-        historicoAtivoIntangivel.setStatusResponsavel(ativoIntangivel.getAtivo().getIdResponsavel().getStatus());
-        historicoAtivoIntangivel.setDocumento(ativoIntangivel.getAtivo().getIdNotaFiscal().getDocumento());
-        historicoAtivoIntangivel.setTipoDocumento(ativoIntangivel.getAtivo().getIdNotaFiscal().getTipoDocumento());
-
-        // Save the HistoricoAtivoIntangivel with the set idAtivoIntangivel
-        historicoAtivoIntangivel = repositorio.save(historicoAtivoIntangivel);
-
-        return new ResponseEntity<>(historicoAtivoIntangivel, HttpStatus.CREATED);
+    public ResponseEntity<HistoricoAtivoIntangivel> criarHistoricoAtivoIntangivel(@RequestBody HistoricoAtivoIntangivelRequest request) {
+        return historicoServico.createHistorico(request);
     }
 
     @GetMapping("/listagemTodos")
@@ -77,14 +52,6 @@ public class HistoricoAtivoIntangivelControle {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/atualizacao/{id}")
-    public ResponseEntity<HistoricoAtivoIntangivel> atualizarHistoricoAtivoIntangivel(@PathVariable long id, @RequestBody HistoricoAtivoIntangivel historicoAtivoIntangivelAtualizado) {
-        return repositorio.findById(id)
-                .map(historicoAtivoIntangivel -> {
-                    repositorio.save(historicoAtivoIntangivel);
-                    return new ResponseEntity<>(historicoAtivoIntangivel, HttpStatus.OK);
-                }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
 
     @DeleteMapping("/exclusao/{id}")
     public ResponseEntity<Void> deletarHistoricoAtivoIntangivel(@PathVariable long id) {

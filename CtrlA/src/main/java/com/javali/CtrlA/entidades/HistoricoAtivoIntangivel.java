@@ -17,103 +17,114 @@ public class HistoricoAtivoIntangivel extends RepresentationModel<HistoricoAtivo
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "data_alteracao")
     private LocalDate dataAlteracao;
 
-    // Fields from AtivoIntangivel
+    // Campos de Ativo
+    @Column(name = "id_ativo")
+    private Long idAtivo;
+
+    @Size(max = 100)
+    @Column(name = "nome_ativo", length = 100)
+    private String nomeAtivo;
+
+    @Column(name = "custo_aquisicao_ativo", precision = 10, scale = 2)
+    private BigDecimal custoAquisicaoAtivo;
+
+    @Size(max = 20)
+    @Column(name = "tipo_ativo", length = 20)
+    private String tipoAtivo;
+
+    @Size(max = 20)
+    @Column(name = "tag_ativo", length = 20)
+    private String tagAtivo;
+
+    @Column(name = "grau_importancia_ativo")
+    private Long grauImportanciaAtivo;
+
+    @Size(max = 50)
+    @Column(name = "status_ativo", length = 50)
+    private String statusAtivo;
+
+    @Size(max = 500)
+    @Column(name = "descricao_ativo", length = 500)
+    private String descricaoAtivo;
+
+    @Size(max = 50)
+    @Column(name = "numero_identificacao_ativo", length = 50)
+    private String numeroIdentificacaoAtivo;
+
+    @Column(name = "ultima_atualizacao_ativo")
+    private LocalDate ultimaAtualizacaoAtivo;
+
+    @Size(max = 100)
+    @Column(name = "marca_ativo", length = 100)
+    private String marcaAtivo;
+
+    @Column(name = "data_aquisicao_ativo")
+    private LocalDate dataAquisicaoAtivo;
+
+    @Column(name = "campos_personalizados_ativo", length = Integer.MAX_VALUE)
+    private String camposPersonalizadosAtivo;
+
+    // Campos de AtivoIntangivel
     @Column(name = "id_ativo_intangivel")
     private Long idAtivoIntangivel;
 
-    @Column(name = "data_expiracao")
-    private LocalDate dataExpiracao;
+    @Column(name = "data_expiracao_ativo_intangivel")
+    private LocalDate dataExpiracaoAtivoIntangivel;
 
-    @Column(name = "taxa_amortizacao", precision = 10, scale = 2)
-    private BigDecimal taxaAmortizacao;
+    @Column(name = "taxa_amortizacao_ativo_intangivel", precision = 10, scale = 2)
+    private BigDecimal taxaAmortizacaoAtivoIntangivel;
 
     @Size(max = 30)
-    @Column(name = "periodo_amortizacao", length = 30)
-    private String periodoAmortizacao;
+    @Column(name = "periodo_amortizacao_ativo_intangivel", length = 30)
+    private String periodoAmortizacaoAtivoIntangivel;
 
-    // Fields from Ativo
-    @Size(max = 100)
-    @Column(name = "nome", length = 100)
-    private String nome;
 
-    @Column(name = "custo_aquisicao", precision = 10, scale = 2)
-    private BigDecimal custoAquisicao;
-
-    @Size(max = 20)
-    @Column(name = "tipo", length = 20)
-    private String tipo;
-
-    @Size(max = 20)
-    @Column(name = "tag", length = 20)
-    private String tag;
-
-    @Column(name = "grau_importancia")
-    private Long grauImportancia;
-
-    @Size(max = 50)
-    @Column(name = "status", length = 50)
-    private String status;
-
-    @Size(max = 500)
-    @Column(name = "descricao", length = 500)
-    private String descricao;
-
-    @Size(max = 50)
-    @Column(name = "numero_identificacao", length = 50)
-    private String numeroIdentificacao;
-
-    @Column(name = "ultima_atualizacao")
-    private LocalDate ultimaAtualizacao;
+    // Campos de Usuario
+    @Column(name = "id_usuario")
+    private Long idUsuario;
 
     @Size(max = 100)
-    @Column(name = "marca", length = 100)
-    private String marca;
-
-    @Column(name = "data_aquisicao")
-    private LocalDate dataAquisicao;
-
-    @Column(name = "campos_personalizados", length = Integer.MAX_VALUE)
-    private String camposPersonalizados;
-
-    // Fields from Usuario
-    @Size(max = 100)
-    @Column(name = "nome_responsavel", length = 100)
-    private String nomeResponsavel;
+    @Column(name = "nome_usuario", length = 100)
+    private String nomeUsuario;
 
     @Size(max = 11)
-    @Column(name = "cpf_responsavel", length = 11)
-    private String cpfResponsavel;
+    @Column(name = "cpf_usuario", length = 11)
+    private String cpfUsuario;
 
-    @Column(name = "nascimento_responsavel")
-    private LocalDate nascimentoResponsavel;
-
-    @Size(max = 20)
-    @Column(name = "departamento_responsavel", length = 20)
-    private String departamentoResponsavel;
+    @Column(name = "nascimento_usuario")
+    private LocalDate nascimentoUsuario;
 
     @Size(max = 20)
-    @Column(name = "telefone_responsavel", length = 20)
-    private String telefoneResponsavel;
+    @Column(name = "departamento_usuario", length = 20)
+    private String departamentoUsuario;
+
+    @Size(max = 20)
+    @Column(name = "telefone_usuario", length = 20)
+    private String telefoneUsuario;
 
     @Size(max = 100)
-    @Column(name = "email_responsavel", length = 100)
-    private String emailResponsavel;
+    @Column(name = "email_usuario", length = 100)
+    private String emailUsuario;
 
     @Size(max = 100)
-    @Column(name = "status_responsavel", length = 100)
-    private String statusResponsavel;
+    @Column(name = "status_usuario", length = 100)
+    private String statusUsuario;
 
-    @Column(name = "documento", length = Integer.MAX_VALUE)
-    private String documento;
+    // Campos de NotaFiscal
+    @Column(name = "id_nota_fiscal")
+    private Long idNotaFiscal;
+
+    @Column(name = "documento_nota_fiscal", length = Integer.MAX_VALUE)
+    private String documentoNotaFiscal;
 
     @Size(max = 30)
-    @Column(name = "tipo_documento", length = 30)
-    private String tipoDocumento;
+    @Column(name = "tipo_documento_nota_fiscal", length = 30)
+    private String tipoDocumentoNotaFiscal;
 
 
 }
