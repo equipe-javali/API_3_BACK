@@ -71,12 +71,13 @@ public class AtivoIntangivelControle {
                 .map(ativoIntangivel -> {
                     Ativo ativo = ativoRepositorio.findById(ativoIntangivel.getAtivo().getId())
                             .orElseThrow(() -> new RuntimeException("Ativo not found with id " + ativoIntangivel.getAtivo().getId()));
-                    ativo.setUltimaAtualizacao(LocalDate.now());
+                    LocalDate dataAtualizacao = LocalDate.now();
+                    ativo.setUltimaAtualizacao(dataAtualizacao);
                     
                     HistoricoAtivoIntangivel historicoIntangivel = new HistoricoAtivoIntangivel();
-                    historicoIntangivel.setIdAtivo(ativo.getId());
                     historicoIntangivel.setIdAtivoIntangivel(ativoIntangivel.getId());
-                    historicoIntangivel.setDataAlteracao(ativoIntangivel.getDataExpiracao());
+                    historicoIntangivel.setDataAlteracao(dataAtualizacao);
+                    historicoIntangivel.setIdAtivo(ativo.getId());
                     historicoIntangivel.setNomeAtivo(ativo.getNome());
                     historicoIntangivel.setMarcaAtivo(ativo.getMarca());
                     historicoIntangivel.setCustoAquisicaoAtivo(ativo.getCustoAquisicao());
@@ -91,6 +92,7 @@ public class AtivoIntangivelControle {
                     historicoIntangivel.setTaxaAmortizacaoAtivoIntangivel(ativoIntangivel.getTaxaAmortizacao());
                     historicoIntangivel.setPeriodoAmortizacaoAtivoIntangivel(ativoIntangivel.getPeriodoAmortizacao());
                     historicoIntangivel.setUltimaAtualizacaoAtivo(ativo.getUltimaAtualizacao());
+                    historicoIntangivel.setCamposPersonalizadosAtivo(ativo.getCamposPersonalizados());
                     
                     Usuario responsavel = ativo.getIdResponsavel();
                     if (responsavel != null) {

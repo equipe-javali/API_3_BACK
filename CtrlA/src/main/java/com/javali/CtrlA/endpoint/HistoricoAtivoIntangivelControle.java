@@ -1,10 +1,6 @@
 package com.javali.CtrlA.endpoint;
 
-import com.javali.CtrlA.entidades.AtivoIntangivel;
 import com.javali.CtrlA.entidades.HistoricoAtivoIntangivel;
-import com.javali.CtrlA.entidades.NotaFiscal;
-import com.javali.CtrlA.entidades.Usuario;
-import com.javali.CtrlA.repositorios.AtivointangivelRepositorio;
 import com.javali.CtrlA.repositorios.HistoricoAtivoIntangivelRepositorio;
 import com.javali.CtrlA.servicos.HistoricoAtivoIntangivelServico;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +17,6 @@ public class HistoricoAtivoIntangivelControle {
 
     @Autowired
     private HistoricoAtivoIntangivelServico historicoServico;
-
-    @Autowired
-    private AtivointangivelRepositorio ativoIntangivelRepositorio;
 
     @Autowired
     private HistoricoAtivoIntangivelRepositorio repositorio;
