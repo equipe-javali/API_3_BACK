@@ -32,14 +32,17 @@ public class UsuarioControle {
     private UsuarioHateoas hateoas;
 
     @PostMapping("/cadastro")
-    public ResponseEntity<Usuario> criarUsuario(@RequestBody UsuarioCadastrarAdaptador novoUsuario) {
+    public ResponseEntity<String> criarUsuario(@RequestBody UsuarioCadastrarAdaptador novoUsuario) {
         String email = novoUsuario.getUsuario().getEmail();
     	String cpf = novoUsuario.getUsuario().getCpf();
     	    	
     	List<Usuario> usuarios = repositorio.findAll();
     	for (Usuario u : usuarios) {
-    		if (u.getEmail().equals(email) || u.getCpf().equals(cpf)) {
-    			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    		if (u.getEmail().equals(email)) {
+    			return new ResponseEntity<String>("O e-mail já existe", HttpStatus.BAD_REQUEST);
+    		}
+    		if (u.getCpf().equals(cpf)) {
+    			return new ResponseEntity<String>("O CPF já existe", HttpStatus.BAD_REQUEST);
     		}
     	}
 
@@ -48,13 +51,13 @@ public class UsuarioControle {
     		usuario.setPerfil(Perfil.ADM);
     		repositorio.save(usuario);
     		hateoas.adicionarLink(usuario);
-    		return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+    		return new ResponseEntity<String>("Usuário destinatário cadastrado", HttpStatus.CREATED);
     	} else {
             Usuario usuario = novoUsuario.getUsuario();
             usuario.setPerfil(Perfil.DESTINATARIO);
             repositorio.save(usuario);
-            hateoas.adicionarLink(usuario);
-            return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+            hateoas.adicionarLink(usuario); 
+            return new ResponseEntity<String>("Usuário administrador cadastrado", HttpStatus.CREATED);
         }
     }
 
