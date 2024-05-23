@@ -2,6 +2,7 @@ package com.javali.CtrlA.endpoint;
 
 import com.javali.CtrlA.entidades.Ativo;
 import com.javali.CtrlA.entidades.AtivoIntangivel;
+import com.javali.CtrlA.entidades.AtivoTangivel;
 import com.javali.CtrlA.entidades.HistoricoAtivoIntangivel;
 import com.javali.CtrlA.entidades.NotaFiscal;
 import com.javali.CtrlA.entidades.Usuario;
@@ -10,6 +11,8 @@ import com.javali.CtrlA.repositorios.AtivointangivelRepositorio;
 import com.javali.CtrlA.repositorios.HistoricoAtivoIntangivelRepositorio;
 import com.javali.CtrlA.repositorios.NotaFiscalRepositorio;
 import com.javali.CtrlA.repositorios.UsuarioRepositorio;
+import com.javali.CtrlA.servicos.HistoricoAtivoIntangivelServico;
+
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +37,9 @@ public class AtivoIntangivelControle {
     private AtivointangivelRepositorio repositorio;
 
     @Autowired
+    private HistoricoAtivoIntangivelServico historicoServico;
+
+    @Autowired
     private AtivoRepositorio ativoRepositorio;
 
     @Autowired
@@ -44,7 +50,11 @@ public class AtivoIntangivelControle {
 
     @PostMapping("/cadastro")
     public ResponseEntity<AtivoIntangivel> criarAtivoIntangivel(@RequestBody AtivoIntangivel novoAtivoIntangivel) {
+    	novoAtivoIntangivel.getAtivo().setDataCadastro(LocalDate.now());
         AtivoIntangivel ativoIntangivel = repositorio.save(novoAtivoIntangivel);
+        
+        historicoServico.createHistorico(ativoIntangivel.getId());
+        
         return new ResponseEntity<>(ativoIntangivel, HttpStatus.CREATED);
     }
 
@@ -67,99 +77,64 @@ public class AtivoIntangivelControle {
 
     @PutMapping("/atualizacao/{id}")
     public ResponseEntity<?> atualizarAtivoIntangivel(@PathVariable long id, @RequestBody AtivoIntangivel ativoIntangivelAtualizado) {
-        return repositorio.findById(id)
-                .map(ativoIntangivel -> {
-                    Ativo ativo = ativoRepositorio.findById(ativoIntangivel.getAtivo().getId())
-                            .orElseThrow(() -> new RuntimeException("Ativo not found with id " + ativoIntangivel.getAtivo().getId()));
-                    LocalDate dataAtualizacao = LocalDate.now();
-                    ativo.setUltimaAtualizacao(dataAtualizacao);
-                    
-                    HistoricoAtivoIntangivel historicoIntangivel = new HistoricoAtivoIntangivel();
-                    historicoIntangivel.setIdAtivoIntangivel(ativoIntangivel.getId());
-                    historicoIntangivel.setDataAlteracao(dataAtualizacao);
-                    historicoIntangivel.setIdAtivo(ativo.getId());
-                    historicoIntangivel.setNomeAtivo(ativo.getNome());
-                    historicoIntangivel.setMarcaAtivo(ativo.getMarca());
-                    historicoIntangivel.setCustoAquisicaoAtivo(ativo.getCustoAquisicao());
-                    historicoIntangivel.setDataAquisicaoAtivo(ativo.getDataAquisicao());
-                    historicoIntangivel.setDataExpiracaoAtivoIntangivel(ativoIntangivel.getDataExpiracao());
-                    historicoIntangivel.setNumeroIdentificacaoAtivo(ativo.getNumeroIdentificacao());
-                    historicoIntangivel.setTipoAtivo(ativo.getTipo());
-                    historicoIntangivel.setTagAtivo(ativo.getTag());
-                    historicoIntangivel.setGrauImportanciaAtivo(ativo.getGrauImportancia());
-                    historicoIntangivel.setStatusAtivo(ativo.getStatus());
-                    historicoIntangivel.setDescricaoAtivo(ativo.getDescricao());
-                    historicoIntangivel.setTaxaAmortizacaoAtivoIntangivel(ativoIntangivel.getTaxaAmortizacao());
-                    historicoIntangivel.setPeriodoAmortizacaoAtivoIntangivel(ativoIntangivel.getPeriodoAmortizacao());
-                    historicoIntangivel.setUltimaAtualizacaoAtivo(ativo.getUltimaAtualizacao());
-                    historicoIntangivel.setCamposPersonalizadosAtivo(ativo.getCamposPersonalizados());
-                    
-                    Usuario responsavel = ativo.getIdResponsavel();
-                    if (responsavel != null) {
-                    	historicoIntangivel.setIdUsuario(responsavel.getId());
-                        historicoIntangivel.setNomeUsuario(responsavel.getNome());
-                        historicoIntangivel.setCpfUsuario(responsavel.getCpf());
-                        historicoIntangivel.setNascimentoUsuario(responsavel.getNascimento());
-                        historicoIntangivel.setDepartamentoUsuario(responsavel.getDepartamento());
-                        historicoIntangivel.setTelefoneUsuario(responsavel.getTelefone());
-                        historicoIntangivel.setEmailUsuario(responsavel.getEmail());
-                        historicoIntangivel.setStatusUsuario(responsavel.getStatus());	
-                    }
-                    
-                    NotaFiscal notaFiscalHistorico = ativo.getIdNotaFiscal();
-                    if (notaFiscalHistorico != null) {
-                    	historicoIntangivel.setIdNotaFiscal(notaFiscalHistorico.getId());
-                    	historicoIntangivel.setTipoDocumentoNotaFiscal(notaFiscalHistorico.getTipoDocumento());
-                    	historicoIntangivel.setDocumentoNotaFiscal(notaFiscalHistorico.getDocumento());
-                    }
-                    historicoRepositorio.save(historicoIntangivel);
+    	Optional<AtivoIntangivel> opAtivoIntangivel = repositorio.findById(id);
+    	if(opAtivoIntangivel.isPresent()) {
+    		AtivoIntangivel ativoIntangivel = opAtivoIntangivel.get();
+    		Ativo ativo = ativoRepositorio.findById(ativoIntangivel.getAtivo().getId()).get();
+            ativoIntangivel.getAtivo().setUltimaAtualizacao(LocalDate.now());
+            ativoIntangivel = repositorio.save(ativoIntangivel);
+            boolean historicoRegistrado = historicoServico.createHistorico(ativoIntangivel.getId());
+            if (!historicoRegistrado) {
+            	return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
 
-                    // Fetch the Usuario and NotaFiscal entities from the database if idResponsavel and idNotaFiscal are not null
-                    if (ativoIntangivelAtualizado.getAtivo().getIdResponsavel() != null) {
-                        Usuario usuario = usuarioRepositorio.findById(ativoIntangivelAtualizado.getAtivo().getIdResponsavel().getId())
-                                .orElseThrow(() -> new RuntimeException("Usuario not found with id " + ativoIntangivelAtualizado.getAtivo().getIdResponsavel().getId()));
-                        ativo.setIdResponsavel(usuario);
-                    }
-                    if (ativoIntangivelAtualizado.getAtivo().getIdNotaFiscal() != null) {
-                        NotaFiscal notaFiscal = notaFiscalRepositorio.findById(ativoIntangivelAtualizado.getAtivo().getIdNotaFiscal().getId())
-                                .orElseThrow(() -> new RuntimeException("NotaFiscal not found with id " + ativoIntangivelAtualizado.getAtivo().getIdNotaFiscal().getId()));
-                        ativo.setIdNotaFiscal(notaFiscal);
-                    }
+            // Fetch the Usuario and NotaFiscal entities from the database if idResponsavel and idNotaFiscal are not null
+            if (ativoIntangivelAtualizado.getAtivo().getIdResponsavel() != null) {
+                Usuario usuario = usuarioRepositorio.findById(ativoIntangivelAtualizado.getAtivo().getIdResponsavel().getId())
+                        .orElseThrow(() -> new RuntimeException("Usuario not found with id " + ativoIntangivelAtualizado.getAtivo().getIdResponsavel().getId()));
+                ativo.setIdResponsavel(usuario);
+            }
+            if (ativoIntangivelAtualizado.getAtivo().getIdNotaFiscal() != null) {
+                NotaFiscal notaFiscal = notaFiscalRepositorio.findById(ativoIntangivelAtualizado.getAtivo().getIdNotaFiscal().getId())
+                        .orElseThrow(() -> new RuntimeException("NotaFiscal not found with id " + ativoIntangivelAtualizado.getAtivo().getIdNotaFiscal().getId()));
+                ativo.setIdNotaFiscal(notaFiscal);
+            }
 
-                    // Copy the properties from ativoIntangivelAtualizado.getAtivo() to ativo
-                    BeanUtilsBean notNull = new BeanUtilsBean() {
-                        @Override
-                        public void copyProperty(Object dest, String name, Object value)
-                                throws IllegalAccessException, InvocationTargetException {
-                            if (value == null) return;
-                            super.copyProperty(dest, name, value);
-                        }
-                    };
+            // Copy the properties from ativoIntangivelAtualizado.getAtivo() to ativo
+            BeanUtilsBean notNull = new BeanUtilsBean() {
+                @Override
+                public void copyProperty(Object dest, String name, Object value)
+                        throws IllegalAccessException, InvocationTargetException {
+                    if (value == null) return;
+                    super.copyProperty(dest, name, value);
+                }
+            };
 
-                    try {
-                        notNull.copyProperties(ativo, ativoIntangivelAtualizado.getAtivo());
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException("Error copying properties", e);
-                    }
+            try {
+                notNull.copyProperties(ativo, ativoIntangivelAtualizado.getAtivo());
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException("Error copying properties", e);
+            }
 
-                    // Save the Ativo entity
-                    ativo = ativoRepositorio.save(ativo);
+            // Save the Ativo entity
+            ativo = ativoRepositorio.save(ativo);
 
-                    // Update the AtivoIntangivel entity
-                    if (ativoIntangivelAtualizado.getDataExpiracao() != null) {
-                        ativoIntangivel.setDataExpiracao(ativoIntangivelAtualizado.getDataExpiracao());
-                    }
-                    if (ativoIntangivelAtualizado.getTaxaAmortizacao() != null) {
-                        ativoIntangivel.setTaxaAmortizacao(ativoIntangivelAtualizado.getTaxaAmortizacao());
-                    }
-                    if (ativoIntangivelAtualizado.getPeriodoAmortizacao() != null) {
-                        ativoIntangivel.setPeriodoAmortizacao(ativoIntangivelAtualizado.getPeriodoAmortizacao());
-                    }
+            // Update the AtivoIntangivel entity
+            if (ativoIntangivelAtualizado.getDataExpiracao() != null) {
+                ativoIntangivel.setDataExpiracao(ativoIntangivelAtualizado.getDataExpiracao());
+            }
+            if (ativoIntangivelAtualizado.getTaxaAmortizacao() != null) {
+                ativoIntangivel.setTaxaAmortizacao(ativoIntangivelAtualizado.getTaxaAmortizacao());
+            }
+            if (ativoIntangivelAtualizado.getPeriodoAmortizacao() != null) {
+                ativoIntangivel.setPeriodoAmortizacao(ativoIntangivelAtualizado.getPeriodoAmortizacao());
+            }
 
-                    AtivoIntangivel updatedAtivoIntangivel = repositorio.save(ativoIntangivel);
-                    
-                    return new ResponseEntity<>(updatedAtivoIntangivel, HttpStatus.OK);
-                }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            AtivoIntangivel updatedAtivoIntangivel = repositorio.save(ativoIntangivel);
+            
+            return new ResponseEntity<>(updatedAtivoIntangivel, HttpStatus.OK);
+    	}
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/exclusao/{id}")

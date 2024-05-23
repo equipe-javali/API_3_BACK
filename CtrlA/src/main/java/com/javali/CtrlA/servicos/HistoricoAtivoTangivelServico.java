@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.javali.CtrlA.endpoint.HistoricoAtivoTangivelRequest;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
@@ -21,17 +20,17 @@ public class HistoricoAtivoTangivelServico {
     @Autowired
     private AtivotangivelRepositorio ativoTangivelRepositorio;
 
-    public ResponseEntity<HistoricoAtivoTangivel> createHistorico(HistoricoAtivoTangivelRequest request) {
-        AtivoTangivel ativoTangivel = ativoTangivelRepositorio.findById(request.getIdAtivoTangivel()).orElse(null);
+    public boolean createHistorico(Long idAtivoIntangivel) {
+        AtivoTangivel ativoTangivel = ativoTangivelRepositorio.findById(idAtivoIntangivel).orElse(null);
         if (ativoTangivel == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return false;
         }
 
         // Create a new HistoricoAtivoTangivel
         HistoricoAtivoTangivel historicoAtivoTangivel = new HistoricoAtivoTangivel();
 
         // Definir campo data_alteracao com data atual local
-        historicoAtivoTangivel.setDataAlteracao(LocalDate.now());
+        historicoAtivoTangivel.setUltimaAtualizacaoAtivo(LocalDate.now());
 
 
         // Campos de AtivoTangivel
@@ -54,31 +53,32 @@ public class HistoricoAtivoTangivelServico {
         historicoAtivoTangivel.setUltimaAtualizacaoAtivo(ativoTangivel.getAtivo().getUltimaAtualizacao());
         historicoAtivoTangivel.setMarcaAtivo(ativoTangivel.getAtivo().getMarca());
         historicoAtivoTangivel.setDataAquisicaoAtivo(ativoTangivel.getAtivo().getDataAquisicao());
+        historicoAtivoTangivel.setDataCadastroAtivo(ativoTangivel.getAtivo().getDataCadastro());
         historicoAtivoTangivel.setCamposPersonalizadosAtivo(ativoTangivel.getAtivo().getCamposPersonalizados());
 
 
         // Campos de Usuario
-            if (ativoTangivel.getAtivo().getIdResponsavel() != null) {
-                historicoAtivoTangivel.setIdUsuario(ativoTangivel.getAtivo().getIdResponsavel().getId());
-                historicoAtivoTangivel.setNomeUsuario(ativoTangivel.getAtivo().getIdResponsavel().getNome());
-                historicoAtivoTangivel.setCpfUsuario(ativoTangivel.getAtivo().getIdResponsavel().getCpf());
-                historicoAtivoTangivel.setNascimentoUsuario(ativoTangivel.getAtivo().getIdResponsavel().getNascimento());
-                historicoAtivoTangivel.setDepartamentoUsuario(ativoTangivel.getAtivo().getIdResponsavel().getDepartamento());
-                historicoAtivoTangivel.setTelefoneUsuario(ativoTangivel.getAtivo().getIdResponsavel().getTelefone());
-                historicoAtivoTangivel.setEmailUsuario(ativoTangivel.getAtivo().getIdResponsavel().getEmail());
-                historicoAtivoTangivel.setStatusUsuario(ativoTangivel.getAtivo().getIdResponsavel().getStatus());
-            }
+        if (ativoTangivel.getAtivo().getIdResponsavel() != null) {
+            historicoAtivoTangivel.setIdUsuario(ativoTangivel.getAtivo().getIdResponsavel().getId());
+            historicoAtivoTangivel.setNomeUsuario(ativoTangivel.getAtivo().getIdResponsavel().getNome());
+            historicoAtivoTangivel.setCpfUsuario(ativoTangivel.getAtivo().getIdResponsavel().getCpf());
+            historicoAtivoTangivel.setNascimentoUsuario(ativoTangivel.getAtivo().getIdResponsavel().getNascimento());
+            historicoAtivoTangivel.setDepartamentoUsuario(ativoTangivel.getAtivo().getIdResponsavel().getDepartamento());
+            historicoAtivoTangivel.setTelefoneUsuario(ativoTangivel.getAtivo().getIdResponsavel().getTelefone());
+            historicoAtivoTangivel.setEmailUsuario(ativoTangivel.getAtivo().getIdResponsavel().getEmail());
+            historicoAtivoTangivel.setStatusUsuario(ativoTangivel.getAtivo().getIdResponsavel().getStatus());
+        }
 
         // Campos de NotaFiscal
-            if (ativoTangivel.getAtivo().getIdNotaFiscal() != null) {
-                historicoAtivoTangivel.setIdNotaFiscal(ativoTangivel.getAtivo().getIdNotaFiscal().getId());
-                historicoAtivoTangivel.setDocumentoNotaFiscal(ativoTangivel.getAtivo().getIdNotaFiscal().getDocumento());
-                historicoAtivoTangivel.setTipoDocumentoNotaFiscal(ativoTangivel.getAtivo().getIdNotaFiscal().getTipoDocumento());
-            }
+        if (ativoTangivel.getAtivo().getIdNotaFiscal() != null) {
+            historicoAtivoTangivel.setIdNotaFiscal(ativoTangivel.getAtivo().getIdNotaFiscal().getId());
+            historicoAtivoTangivel.setDocumentoNotaFiscal(ativoTangivel.getAtivo().getIdNotaFiscal().getDocumento());
+            historicoAtivoTangivel.setTipoDocumentoNotaFiscal(ativoTangivel.getAtivo().getIdNotaFiscal().getTipoDocumento());
+        }
 
         // Salvar o novo HistoricoAtivoTangivel
         historicoAtivoTangivel = historicoRepositorio.save(historicoAtivoTangivel);
 
-        return new ResponseEntity<>(historicoAtivoTangivel, HttpStatus.CREATED);
+        return true;
     }
 }

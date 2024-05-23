@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.javali.CtrlA.endpoint.HistoricoAtivoIntangivelRequest;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
@@ -21,17 +20,17 @@ public class HistoricoAtivoIntangivelServico {
     @Autowired
     private AtivointangivelRepositorio ativoIntangivelRepositorio;
 
-    public ResponseEntity<HistoricoAtivoIntangivel> createHistorico(HistoricoAtivoIntangivelRequest request) {
-        AtivoIntangivel ativoIntangivel = ativoIntangivelRepositorio.findById(request.getIdAtivoIntangivel()).orElse(null);
+    public boolean createHistorico(Long idAtivoIntangivel) {
+        AtivoIntangivel ativoIntangivel = ativoIntangivelRepositorio.findById(idAtivoIntangivel).orElse(null);
         if (ativoIntangivel == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return false;
         }
 
         // Create a new HistoricoAtivoIntangivel
         HistoricoAtivoIntangivel historicoAtivoIntangivel = new HistoricoAtivoIntangivel();
 
         // Set the data_alteracao field to the current local date
-        historicoAtivoIntangivel.setDataAlteracao(LocalDate.now());
+        historicoAtivoIntangivel.setUltimaAtualizacaoAtivo(LocalDate.now());
 
 
         // Campos de AtivoIntangivel
@@ -54,6 +53,7 @@ public class HistoricoAtivoIntangivelServico {
         historicoAtivoIntangivel.setUltimaAtualizacaoAtivo(ativoIntangivel.getAtivo().getUltimaAtualizacao());
         historicoAtivoIntangivel.setMarcaAtivo(ativoIntangivel.getAtivo().getMarca());
         historicoAtivoIntangivel.setDataAquisicaoAtivo(ativoIntangivel.getAtivo().getDataAquisicao());
+        historicoAtivoIntangivel.setDataCadastroAtivo(ativoIntangivel.getAtivo().getDataCadastro());
         historicoAtivoIntangivel.setCamposPersonalizadosAtivo(ativoIntangivel.getAtivo().getCamposPersonalizados());
 
 
@@ -79,6 +79,6 @@ public class HistoricoAtivoIntangivelServico {
         // Salvar o novo HistoricoAtivoIntangivel
         historicoAtivoIntangivel = historicoRepositorio.save(historicoAtivoIntangivel);
 
-        return new ResponseEntity<>(historicoAtivoIntangivel, HttpStatus.CREATED);
+        return true;
     }
 }

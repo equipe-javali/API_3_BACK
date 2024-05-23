@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,11 +21,6 @@ public class HistoricoAtivoIntangivelControle {
 
     @Autowired
     private HistoricoAtivoIntangivelRepositorio repositorio;
-
-    @PostMapping("/cadastro")
-    public ResponseEntity<HistoricoAtivoIntangivel> criarHistoricoAtivoIntangivel(@RequestBody HistoricoAtivoIntangivelRequest request) {
-        return historicoServico.createHistorico(request);
-    }
 
     @GetMapping("/listagemTodos")
     public ResponseEntity<List<HistoricoAtivoIntangivel>> obterHistoricoAtivoIntangivels() {
@@ -43,6 +39,22 @@ public class HistoricoAtivoIntangivelControle {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/listagemAtivo/{id}")
+    public ResponseEntity<List<HistoricoAtivoIntangivel>> obterHistoricosAtivoIntangivel(@PathVariable long id) {
+        List<HistoricoAtivoIntangivel> todosHistoricos = repositorio.findAll();
+
+        List<HistoricoAtivoIntangivel> historicos = new ArrayList<HistoricoAtivoIntangivel>();
+        for (HistoricoAtivoIntangivel historico : todosHistoricos) {
+            if (historico.getIdAtivoIntangivel() == id) {
+                historicos.add(historico);
+            }
+        }
+
+        if (historicos.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(historicos, HttpStatus.OK);
+    }
 
     @DeleteMapping("/exclusao/{id}")
     public ResponseEntity<Void> deletarHistoricoAtivoIntangivel(@PathVariable long id) {
