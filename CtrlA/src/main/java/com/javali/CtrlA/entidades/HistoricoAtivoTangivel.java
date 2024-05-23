@@ -19,9 +19,6 @@ public class HistoricoAtivoTangivel extends RepresentationModel<HistoricoAtivoTa
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "data_alteracao")
-    private LocalDate dataAlteracao;
-
     // Campos de Ativo
     @Column(name = "id_ativo")
     private Long idAtivo;
@@ -65,6 +62,9 @@ public class HistoricoAtivoTangivel extends RepresentationModel<HistoricoAtivoTa
 
     @Column(name = "data_aquisicao_ativo")
     private LocalDate dataAquisicaoAtivo;
+    
+    @Column(name = "data_cadastro_ativo")
+    private LocalDate dataCadastroAtivo;
 
     @Column(name = "campos_personalizados_ativo", length = Integer.MAX_VALUE)
     private String camposPersonalizadosAtivo;

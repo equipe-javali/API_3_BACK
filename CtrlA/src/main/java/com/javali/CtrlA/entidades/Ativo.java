@@ -68,6 +68,9 @@ public class Ativo extends RepresentationModel<Ativo> {
 
     @Column(name = "data_aquisicao")
     private LocalDate dataAquisicao;
+    
+    @Column(name = "data_cadastro")
+    private LocalDate dataCadastro;
 
     @Column(name = "campos_personalizados", length = Integer.MAX_VALUE)
     private String camposPersonalizados;
