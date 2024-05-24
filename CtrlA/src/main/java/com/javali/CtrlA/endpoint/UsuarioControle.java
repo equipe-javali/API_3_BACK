@@ -51,13 +51,13 @@ public class UsuarioControle {
     		usuario.setPerfil(Perfil.ADM);
     		repositorio.save(usuario);
     		hateoas.adicionarLink(usuario);
-    		return new ResponseEntity<String>("Usuário destinatário cadastrado", HttpStatus.CREATED);
+    		return new ResponseEntity<String>("Usuário administrador cadastrado", HttpStatus.CREATED);
     	} else {
             Usuario usuario = novoUsuario.getUsuario();
             usuario.setPerfil(Perfil.DESTINATARIO);
             repositorio.save(usuario);
             hateoas.adicionarLink(usuario); 
-            return new ResponseEntity<String>("Usuário administrador cadastrado", HttpStatus.CREATED);
+            return new ResponseEntity<String>("Usuário destinatário cadastrado", HttpStatus.CREATED);
         }
     }
 
