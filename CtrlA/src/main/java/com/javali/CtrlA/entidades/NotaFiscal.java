@@ -16,11 +16,14 @@ public class NotaFiscal extends RepresentationModel<NotaFiscal> {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "documento", length = Integer.MAX_VALUE)
-    private String documento;
-
+    @Size(max = 50)
+    @Column(name = "nome", length = 50)
+    private String nome;
+    
     @Size(max = 30)
     @Column(name = "tipo_documento", length = 30)
     private String tipoDocumento;
-
+    
+    @Column(name = "documento", length = Integer.MAX_VALUE)
+    private String documento;
 }
