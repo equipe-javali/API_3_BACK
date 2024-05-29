@@ -1,7 +1,6 @@
 package com.javali.CtrlA.endpoint;
 
 import com.javali.CtrlA.adaptadores.UsuarioCadastrarAdaptador;
-import com.javali.CtrlA.componentes.UsuarioSelecionadorEmail;
 import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.entidades.UsuarioLogin;
 import com.javali.CtrlA.hateoas.UsuarioHateoas;
@@ -18,8 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/usuario")
@@ -162,4 +159,9 @@ public class UsuarioControle {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    
+    public ResponseEntity<String> enviarEmail(){
+    	return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+    }
+    
 }
