@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +17,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/historicoAtivoTangivel")
 public class HistoricoAtivoTangivelControle {
-
-    @Autowired
-    private HistoricoAtivoTangivelServico historicoServico;
-
     @Autowired
     private AtivotangivelRepositorio ativoTangivelRepositorio;
 
@@ -53,6 +50,49 @@ public class HistoricoAtivoTangivelControle {
                 historicos.add(historico);
             }
         }
+        
+        Optional<AtivoTangivel> opAtivoTangivelAtual = ativoTangivelRepositorio.findById(id);
+        if (opAtivoTangivelAtual.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        
+        AtivoTangivel ativoTangivelAtual = opAtivoTangivelAtual.get();
+        HistoricoAtivoTangivel atual = new HistoricoAtivoTangivel();
+        atual.setUltimaAtualizacaoAtivo(LocalDate.now());
+        atual.setIdAtivoTangivel(ativoTangivelAtual.getId());
+        atual.setGarantiaAtivoTangivel(ativoTangivelAtual.getGarantia());
+        atual.setTaxaDepreciacaoAtivoTangivel(ativoTangivelAtual.getTaxaDepreciacao());
+        atual.setPeriodoDepreciacaoAtivoTangivel(ativoTangivelAtual.getPeriodoDepreciacao());
+        atual.setIdAtivo(ativoTangivelAtual.getAtivo().getId());
+        atual.setNomeAtivo(ativoTangivelAtual.getAtivo().getNome());
+        atual.setCustoAquisicaoAtivo(ativoTangivelAtual.getAtivo().getCustoAquisicao());
+        atual.setTipoAtivo(ativoTangivelAtual.getAtivo().getTipo());
+        atual.setTagAtivo(ativoTangivelAtual.getAtivo().getTag());
+        atual.setGrauImportanciaAtivo(ativoTangivelAtual.getAtivo().getGrauImportancia());
+        atual.setStatusAtivo(ativoTangivelAtual.getAtivo().getStatus());
+        atual.setDescricaoAtivo(ativoTangivelAtual.getAtivo().getDescricao());
+        atual.setNumeroIdentificacaoAtivo(ativoTangivelAtual.getAtivo().getNumeroIdentificacao());
+        atual.setUltimaAtualizacaoAtivo(ativoTangivelAtual.getAtivo().getUltimaAtualizacao());
+        atual.setMarcaAtivo(ativoTangivelAtual.getAtivo().getMarca());
+        atual.setDataAquisicaoAtivo(ativoTangivelAtual.getAtivo().getDataAquisicao());
+        atual.setDataCadastroAtivo(ativoTangivelAtual.getAtivo().getDataCadastro());
+        atual.setCamposPersonalizadosAtivo(ativoTangivelAtual.getAtivo().getCamposPersonalizados());
+        if (ativoTangivelAtual.getAtivo().getIdResponsavel() != null) {
+        	atual.setIdUsuario(ativoTangivelAtual.getAtivo().getIdResponsavel().getId());
+        	atual.setNomeUsuario(ativoTangivelAtual.getAtivo().getIdResponsavel().getNome());
+        	atual.setCpfUsuario(ativoTangivelAtual.getAtivo().getIdResponsavel().getCpf());
+        	atual.setNascimentoUsuario(ativoTangivelAtual.getAtivo().getIdResponsavel().getNascimento());
+            atual.setDepartamentoUsuario(ativoTangivelAtual.getAtivo().getIdResponsavel().getDepartamento());
+            atual.setTelefoneUsuario(ativoTangivelAtual.getAtivo().getIdResponsavel().getTelefone());
+            atual.setEmailUsuario(ativoTangivelAtual.getAtivo().getIdResponsavel().getEmail());
+            atual.setStatusUsuario(ativoTangivelAtual.getAtivo().getIdResponsavel().getStatus());
+        }
+        if (ativoTangivelAtual.getAtivo().getIdNotaFiscal() != null) {
+        	atual.setIdNotaFiscal(ativoTangivelAtual.getAtivo().getIdNotaFiscal().getId());
+        	atual.setDocumentoNotaFiscal(ativoTangivelAtual.getAtivo().getIdNotaFiscal().getDocumento());
+        	atual.setTipoDocumentoNotaFiscal(ativoTangivelAtual.getAtivo().getIdNotaFiscal().getTipoDocumento());
+        }
+        historicos.add(atual);
 
         if (historicos.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
