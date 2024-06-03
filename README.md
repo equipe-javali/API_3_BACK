@@ -24,3 +24,5 @@ EXEMPLO
 "1.0"
 
 ## Descrição das branches
+
+2.0 - Branch para a crição da rota que altera a senha de um usuário em caso de esquecimento de senha - Caique
