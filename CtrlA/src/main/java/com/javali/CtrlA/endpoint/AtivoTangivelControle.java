@@ -6,7 +6,6 @@ import com.javali.CtrlA.entidades.NotaFiscal;
 import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.repositorios.AtivoRepositorio;
 import com.javali.CtrlA.repositorios.AtivotangivelRepositorio;
-import com.javali.CtrlA.repositorios.HistoricoAtivoTangivelRepositorio;
 import com.javali.CtrlA.repositorios.NotaFiscalRepositorio;
 import com.javali.CtrlA.repositorios.UsuarioRepositorio;
 import com.javali.CtrlA.servicos.HistoricoAtivoTangivelServico;
@@ -28,9 +27,6 @@ import java.util.Optional;
 @RequestMapping("/ativoTangivel")
 @PreAuthorize("hasAnyAuthority('ADM')")
 public class AtivoTangivelControle {
-    @Autowired
-    private HistoricoAtivoTangivelRepositorio historicoRepositorio;
-
     @Autowired
     private AtivotangivelRepositorio repositorio;
     

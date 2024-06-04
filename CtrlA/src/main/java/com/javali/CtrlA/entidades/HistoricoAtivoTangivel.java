@@ -120,7 +120,7 @@ public class HistoricoAtivoTangivel extends RepresentationModel<HistoricoAtivoTa
     private Long idNotaFiscal;
 
     @Column(name = "documento_nota_fiscal", length = Integer.MAX_VALUE)
-    private String documentoNotaFiscal;
+    private byte[] documentoNotaFiscal;
 
     @Size(max = 30)
     @Column(name = "tipo_documento_nota_fiscal", length = 30)

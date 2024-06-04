@@ -25,5 +25,5 @@ public class NotaFiscal extends RepresentationModel<NotaFiscal> {
     private String tipoDocumento;
     
     @Column(name = "documento", length = Integer.MAX_VALUE)
-    private String documento;
+    private byte[] documento;
 }

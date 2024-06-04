@@ -47,7 +47,7 @@ public class Ativo extends RepresentationModel<Ativo> {
     @JoinColumn(name = "id_responsavel", nullable = true)
     private Usuario idResponsavel;
     
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade=CascadeType.PERSIST)
     @JoinColumn(name = "id_nota_fiscal", nullable = true)
     private NotaFiscal idNotaFiscal;
 
