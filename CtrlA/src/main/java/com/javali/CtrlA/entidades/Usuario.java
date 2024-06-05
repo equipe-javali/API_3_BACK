@@ -48,11 +48,6 @@ public class Usuario extends RepresentationModel<Usuario> {
     @Column(name = "status", length = 100)
     private String status;
 
-//    @JsonManagedReference
-//    @JsonBackReference
-//    @OneToMany(mappedBy = "idResponsavel")
-//    private Set<Ativo> ativos = new LinkedHashSet<>();
-
     @JsonManagedReference
     @OneToOne(mappedBy = "usuario", cascade=CascadeType.PERSIST)
     private UsuarioLogin usuariologin;
@@ -60,4 +55,10 @@ public class Usuario extends RepresentationModel<Usuario> {
     @Column
     private Perfil perfil;
 
+    @Size(max = 30)
+    @Column(name = "tipo_foto", length = 30)
+    private String tipoFoto;
+    
+    @Column(name = "dados_foto", length = Integer.MAX_VALUE)
+    private byte[] dadosFoto;
 }
