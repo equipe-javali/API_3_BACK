@@ -76,7 +76,7 @@ public class HistoricoAtivoTangivel extends RepresentationModel<HistoricoAtivoTa
     @Column(name = "garantia__ativo_tangivel")
     private LocalDate garantiaAtivoTangivel;
 
-    @Column(name = "taxa_depreciacao_ativo_tangivel", precision = 10, scale = 2)
+    @Column(name = "taxa_depreciacao_ativo_tangivel")
     private BigDecimal taxaDepreciacaoAtivoTangivel;
 
     @Size(max = 30)

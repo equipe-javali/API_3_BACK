@@ -35,7 +35,7 @@ public class Manutencao extends RepresentationModel<Manutencao> {
     @Column(name = "data_fim")
     private LocalDate dataFim;
     
-    @Column(name = "custo")
+    @Column(name = "custo", precision = 10, scale = 2)
     private BigDecimal custo;
     
     @Column(name = "tipo")
@@ -44,6 +44,7 @@ public class Manutencao extends RepresentationModel<Manutencao> {
     @Size(max = 200)
     @Column(name = "descricao")
     private String descricao;
+
 
     @Size(max = 100)
     @Column(name = "localizacao")

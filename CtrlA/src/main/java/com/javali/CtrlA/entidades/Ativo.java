@@ -74,4 +74,7 @@ public class Ativo extends RepresentationModel<Ativo> {
 
     @Column(name = "campos_personalizados", length = Integer.MAX_VALUE)
     private String camposPersonalizados;
+
+    @Column(name = "valor_residual", precision = 10, scale = 2)
+    private BigDecimal valorResidual;
 }
