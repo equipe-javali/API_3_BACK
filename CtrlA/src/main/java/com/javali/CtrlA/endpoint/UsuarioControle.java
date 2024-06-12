@@ -1,12 +1,16 @@
 package com.javali.CtrlA.endpoint;
 
 import com.javali.CtrlA.adaptadores.UsuarioCadastrarAdaptador;
-import com.javali.CtrlA.componentes.UsuarioSelecionadorEmail;
+import com.javali.CtrlA.dto.EmailDTO;
+import com.javali.CtrlA.dto.esqueciSenhaDTO;
+import com.javali.CtrlA.email.ServicoEmail;
 import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.entidades.UsuarioLogin;
 import com.javali.CtrlA.hateoas.UsuarioHateoas;
 import com.javali.CtrlA.modelo.Perfil;
 import com.javali.CtrlA.repositorios.UsuarioRepositorio;
+import com.javali.CtrlA.servicos.UsuarioServico;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +22,26 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @RestController
 @RequestMapping("/usuario")
 public class UsuarioControle {
+	
+	private final BCryptPasswordEncoder codificador = new BCryptPasswordEncoder();
 
     @Autowired
     private UsuarioRepositorio repositorio;
 
     @Autowired
     private UsuarioHateoas hateoas;
+    
+    @Autowired
+    private ServicoEmail emailServico;
+    
+    @Autowired
+    private UsuarioServico usuarioServico;
 
     @PostMapping("/cadastro")
     public ResponseEntity<String> criarUsuario(@RequestBody UsuarioCadastrarAdaptador novoUsuario) {
@@ -162,4 +174,42 @@ public class UsuarioControle {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    
+    @PostMapping("/enviarEmailUsuario")
+    public ResponseEntity<Usuario> enviarEmail(@RequestBody EmailDTO email){
+    	Usuario usuario =  new Usuario();
+    	
+    	List<Usuario> usuarios = repositorio.findByEmail(email.getEmail());
+    	usuario =  usuarios.get(0);
+    	
+    	if (usuario.getEmail() != null) {
+        	String assunto = "Alteração de senha";
+        	String texto = "Houve requisição de alteração de senha\n caso você tenha pedido clique no seguinte link:\nhttps://www.youtube.com/watch?v=dQw4w9WgXcQ\n Caso você não tenha pedido ignore essa mensgem";
+        	
+        	boolean resEmail = emailServico.enviarMsg(email.getEmail(), assunto, texto);
+        	
+        	if (resEmail) {
+        		return new ResponseEntity<Usuario>(usuario,HttpStatus.OK);
+        	} else {
+        		return new ResponseEntity<Usuario>(HttpStatus.BAD_REQUEST);	
+        	}
+		} else {
+			return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
+		}
+    }
+    
+    @PutMapping("/esqueciSenha")
+    public ResponseEntity<String> esqueciSenha(@RequestBody esqueciSenhaDTO novaSenha){
+    	Usuario usuario = repositorio.findById(novaSenha.getUsuario().getId()).get();
+    	if(!(novaSenha.getUsuario().getUsuariologin().getSenha().equals(codificador.encode(novaSenha.getNovaSenha())))) {
+    		usuario.getUsuariologin().setSenha(codificador.encode(novaSenha.getNovaSenha()));
+    		repositorio.save(usuario);
+            hateoas.adicionarLink(usuario);
+            System.out.println(usuario.getUsuariologin().getSenha());;
+    		return new ResponseEntity<String>("Senha alterada", HttpStatus.OK);
+    	} else {
+    		return new ResponseEntity<String>("Sua nova senha não pode ser igual a sua senha anterior", HttpStatus.BAD_REQUEST);
+    	}
+    }
+    
 }
