@@ -7,13 +7,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
+@EnableJpaRepositories("com.javali.CtrlA.repositorios")
 @Table(name = "usuario")
 public class Usuario extends RepresentationModel<Usuario> {
     @Id

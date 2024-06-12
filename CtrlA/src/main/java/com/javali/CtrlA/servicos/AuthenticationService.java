@@ -32,7 +32,7 @@ public class AuthenticationService {
 		if (usuarioValidadorServico.isCredentialValid(loginUsuario)) {
 			UserDetails userDetails = this.userDetailsServico.loadUserByUsername(loginUsuario.getEmail());
 			if (userDetails != null) {
-				Usuario usuario = usuarioProcurar.findByEmail(loginUsuario.getEmail());
+				Usuario usuario = usuarioProcurar.findByEmail(loginUsuario.getEmail()).get(0);
 				String jwtToken = this.jwtService.createToken(userDetails.getUsername(), duration, secret);
 				jwtToken = "Bearer " + jwtToken;
 				ModeloAutenticacao modelo = new ModeloAutenticacao(jwtToken, usuario);
