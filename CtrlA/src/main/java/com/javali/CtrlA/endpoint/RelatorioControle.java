@@ -2,8 +2,9 @@ package com.javali.CtrlA.endpoint;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import com.javali.CtrlA.entidades.Usuario;
 import com.javali.CtrlA.modelo.FiltroRelatorioAtivo;
 import com.javali.CtrlA.modelo.FiltroRelatorioManutencao;
 import com.javali.CtrlA.modelo.RelatorioAtivo;
+import com.javali.CtrlA.modelo.RelatorioManutencao;
 import com.javali.CtrlA.modelo.TipoRelatorioAtivo;
 import com.javali.CtrlA.repositorios.AtivoRepositorio;
 import com.javali.CtrlA.repositorios.AtivointangivelRepositorio;
@@ -65,7 +67,7 @@ public class RelatorioControle {
     	return false;
     }
     
-    @PostMapping("/filtroAtivos")
+    @PostMapping("/relatorioAtivos")
     public ResponseEntity<RelatorioAtivo> criarAtivoIntangivel(@RequestBody FiltroRelatorioAtivo filtro) {
         if (filtro.dataInicio == null) {
             filtro.dataInicio = LocalDate.parse("0001-01-01");
@@ -73,8 +75,6 @@ public class RelatorioControle {
         if (filtro.dataFim == null) {
             filtro.dataFim = LocalDate.parse("9999-12-31");
         }
-        
-        System.out.println(filtro.tipo);
         
         RelatorioAtivo relatorio = new RelatorioAtivo();
         relatorio.qtdAtivos = 0;
@@ -125,7 +125,7 @@ public class RelatorioControle {
     			totalEmManutencao += 1;
     			
     			Long manutencao = relatorio.qtdPorLocal.get("Manutencao");
-    			if (manutencao == null) relatorio.qtdPorLocal.put("Manutencao", 0l);
+    			if (manutencao == null) relatorio.qtdPorLocal.put("Manutencao", 1l);
     			else relatorio.qtdPorLocal.put("Manutencao", manutencao + 1);
     		}
     		else if (ativo.getIdResponsavel() != null) {
@@ -135,7 +135,7 @@ public class RelatorioControle {
     			String local = usuario.getDepartamento();
     			
     			Long manutencao = relatorio.qtdPorLocal.get(local);
-    			if (manutencao == null) relatorio.qtdPorLocal.put(local, 0l);
+    			if (manutencao == null) relatorio.qtdPorLocal.put(local, 1l);
     			else relatorio.qtdPorLocal.put(local, manutencao + 1);
     		}
     		else {
@@ -151,11 +151,52 @@ public class RelatorioControle {
         return new ResponseEntity<>(relatorio, HttpStatus.CREATED);
     }
 
-    @PostMapping("/filtroManutencoes")
-    public ResponseEntity<Float> criarAtivoIntangivel(@RequestBody FiltroRelatorioManutencao filtro) {
-
+    @PostMapping("/relatorioManutencoes")
+    public ResponseEntity<RelatorioManutencao> criarAtivoIntangivel(@RequestBody FiltroRelatorioManutencao filtro) {
+    	RelatorioManutencao relatorio = new RelatorioManutencao();
+    	relatorio.valorTotal = 0;
+    	relatorio.mediaTempoPorTipo = new HashMap();
+    	relatorio.qtdEnvioPorTipo = new HashMap();
     	
+    	Map<Integer, Long> qtdPorTipo = new HashMap();
+    	Map<Integer, Long> diasPorTipo = new HashMap();
+    	
+    	for(Manutencao m : manutencaoRepositorio.findAll()) {
+    		if (filtro.idAtivo != null) {
+        		if (filtro.idAtivo != m.getAtivo().getId()) {
+        			continue;
+        		}
+        	}
+    		
+    		if (m.getCusto() != null)
+    			relatorio.valorTotal += m.getCusto().floatValue();
+			
+			Long qtdTipo = qtdPorTipo.get(m.getTipo());
+			if (qtdTipo == null) qtdPorTipo.put(m.getTipo(), 1l);
+			else qtdPorTipo.put(m.getTipo(), qtdTipo + 1);
+			
+    		LocalDate manutencaoFim = m.getDataFim();
+    		if(manutencaoFim == null) manutencaoFim = LocalDate.now();
+    		System.out.println("Inicio: ");
+    		System.out.println(m.getDataInicio());
+    		System.out.println("Fim: ");
+    		System.out.println(manutencaoFim);
+			long diasManutencao = ChronoUnit.DAYS.between(m.getDataInicio(), manutencaoFim);
+			
+			Long dias = diasPorTipo.get(m.getTipo());
+			if (dias == null) diasPorTipo.put(m.getTipo(), diasManutencao);
+			else diasPorTipo.put(m.getTipo(), dias + diasManutencao);
+			
+			Long qtdEnvio = relatorio.qtdEnvioPorTipo.get(m.getTipo());
+			if (qtdEnvio == null) relatorio.qtdEnvioPorTipo.put(m.getTipo(), 1l);
+			else relatorio.qtdEnvioPorTipo.put(m.getTipo(), qtdEnvio + 1);
+		}
+
+    	for(Integer key : qtdPorTipo.keySet()) {
+    		Long media = diasPorTipo.get(key).longValue() / qtdPorTipo.get(key).longValue();
+    		relatorio.mediaTempoPorTipo.put(key, media);
+    	}
         
-        return new ResponseEntity<>(10.0f, HttpStatus.CREATED);
+        return new ResponseEntity<>(relatorio, HttpStatus.CREATED);
     }
 }
