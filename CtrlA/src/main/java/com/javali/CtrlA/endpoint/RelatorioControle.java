@@ -25,6 +25,7 @@ import com.javali.CtrlA.modelo.FiltroRelatorioManutencao;
 import com.javali.CtrlA.modelo.RelatorioAtivo;
 import com.javali.CtrlA.modelo.RelatorioManutencao;
 import com.javali.CtrlA.modelo.TipoRelatorioAtivo;
+import com.javali.CtrlA.modelo.TipoRelatorioManutencao;
 import com.javali.CtrlA.repositorios.AtivoRepositorio;
 import com.javali.CtrlA.repositorios.AtivointangivelRepositorio;
 import com.javali.CtrlA.repositorios.AtivotangivelRepositorio;
@@ -162,11 +163,12 @@ public class RelatorioControle {
     	Map<Integer, Long> diasPorTipo = new HashMap();
     	
     	for(Manutencao m : manutencaoRepositorio.findAll()) {
-    		if (filtro.idAtivo != null) {
-        		if (filtro.idAtivo != m.getAtivo().getId()) {
-        			continue;
-        		}
+    		if (filtro.idAtivo != null && filtro.idAtivo != m.getAtivo().getId()) {
+    			continue;
         	}
+    		if (filtro.tipo != TipoRelatorioManutencao.DadosGerais && filtro.tipo.ordinal() != m.getTipo()) {
+    			continue;
+    		}
     		
     		if (m.getCusto() != null)
     			relatorio.valorTotal += m.getCusto().floatValue();

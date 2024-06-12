@@ -1,5 +1,5 @@
 package com.javali.CtrlA.modelo;
 
 public enum TipoRelatorioManutencao {
-	DadosGerais, Corretiva, Preventiva, Preditiva
+	DadosGerais, Preventiva, Corretiva, Preditiva
 }
