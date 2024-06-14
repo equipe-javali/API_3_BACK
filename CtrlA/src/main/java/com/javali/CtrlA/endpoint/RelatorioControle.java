@@ -164,6 +164,13 @@ public class RelatorioControle {
 
     @PostMapping("/relatorioManutencoes")
     public ResponseEntity<RelatorioManutencao> criarAtivoIntangivel(@RequestBody FiltroRelatorioManutencao filtro) {
+    	if (filtro.dataInicio == null) {
+            filtro.dataInicio = LocalDate.parse("0001-01-01");
+        }
+        if (filtro.dataFim == null) {
+            filtro.dataFim = LocalDate.parse("9999-12-31");
+        }
+        
     	RelatorioManutencao relatorio = new RelatorioManutencao();
     	relatorio.valorTotal = 0;
     	relatorio.mediaTempoPorTipo = new HashMap();
@@ -177,6 +184,9 @@ public class RelatorioControle {
     			continue;
         	}
     		if (filtro.tipo != TipoRelatorioManutencao.DadosGerais && filtro.tipo.ordinal() != m.getTipo()) {
+    			continue;
+    		}
+    		if (m.getDataInicio().compareTo(filtro.dataInicio) < 0 || m.getDataFim().compareTo(filtro.dataFim) > 0) {
     			continue;
     		}
     		
