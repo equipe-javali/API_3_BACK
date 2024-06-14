@@ -163,7 +163,7 @@ public class RelatorioControle {
     	Map<Integer, Long> diasPorTipo = new HashMap();
     	
     	for(Manutencao m : manutencaoRepositorio.findAll()) {
-    		if (filtro.idAtivo != null && filtro.idAtivo != m.getAtivo().getId()) {
+    		if (filtro.idAtivo != null && !filtro.idAtivo.equals(m.getAtivo().getId())) {
     			continue;
         	}
     		if (filtro.tipo != TipoRelatorioManutencao.DadosGerais && filtro.tipo.ordinal() != m.getTipo()) {
@@ -179,10 +179,6 @@ public class RelatorioControle {
 			
     		LocalDate manutencaoFim = m.getDataFim();
     		if(manutencaoFim == null) manutencaoFim = LocalDate.now();
-    		System.out.println("Inicio: ");
-    		System.out.println(m.getDataInicio());
-    		System.out.println("Fim: ");
-    		System.out.println(manutencaoFim);
 			long diasManutencao = ChronoUnit.DAYS.between(m.getDataInicio(), manutencaoFim);
 			
 			Long dias = diasPorTipo.get(m.getTipo());
