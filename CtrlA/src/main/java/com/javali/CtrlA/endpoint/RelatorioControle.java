@@ -87,9 +87,12 @@ public class RelatorioControle {
     	float totalEmManutencao = 0;
         
         if (filtro.tipo == TipoRelatorioAtivo.Tangiveis || filtro.tipo == TipoRelatorioAtivo.DadosGerais) {
-        	relatorio.qtdAtivos += tangivelRepositorio.findAll().size();
-        	
         	for(AtivoTangivel tangivel : tangivelRepositorio.findAll()) {
+        		if (tangivel.getAtivo().getDataAquisicao().compareTo(filtro.dataInicio) < 0 || tangivel.getAtivo().getDataAquisicao().compareTo(filtro.dataFim) > 0) {
+        			continue;
+        		}
+        		relatorio.qtdAtivos += 1;
+        		
         		float vidaUtil = (float)tangivel.getTaxaDepreciacao().intValue();
         		float valorReal = tangivel.getAtivo().getCustoAquisicao().floatValue() - tangivel.getAtivo().getValorResidual().floatValue();
         		
@@ -99,14 +102,19 @@ public class RelatorioControle {
         		float difDays = diff.toDays();
         		
         		float valorAtual = (valorReal / vidaUtil) * (difDays / 356f);
-        		
-        		relatorio.valorTotal += valorAtual;
+        		if (vidaUtil == 0) {
+        			relatorio.valorTotal += valorReal;
+        		}
+        		else relatorio.valorTotal += valorAtual;
         	}
         }
         else if (filtro.tipo == TipoRelatorioAtivo.Intangiveis || filtro.tipo == TipoRelatorioAtivo.DadosGerais) {
-        	relatorio.qtdAtivos += intangivelRepositorio.findAll().size();
-        	
         	for(AtivoIntangivel intangivel : intangivelRepositorio.findAll()) {
+        		if (intangivel.getAtivo().getDataAquisicao().compareTo(filtro.dataInicio) < 0 || intangivel.getAtivo().getDataAquisicao().compareTo(filtro.dataFim) > 0) {
+        			continue;
+        		}
+        		relatorio.qtdAtivos += 1;
+        		
         		float vidaUtil = (float)intangivel.getTaxaAmortizacao().intValue();
         		float valorReal = intangivel.getAtivo().getCustoAquisicao().floatValue() - intangivel.getAtivo().getValorResidual().floatValue();
         		
@@ -116,8 +124,10 @@ public class RelatorioControle {
         		float difDays = diff.toDays();
         		
         		float valorAtual = (valorReal / vidaUtil) * (difDays / 356f);
-        		
-        		relatorio.valorTotal += valorAtual;
+        		if (vidaUtil == 0) {
+        			relatorio.valorTotal += valorReal;
+        		}
+        		else relatorio.valorTotal += valorAtual;
         	}
         }
         
