@@ -49,7 +49,7 @@ public class Manutencao extends RepresentationModel<Manutencao> {
     @Column(name = "localizacao")
     private String localizacao;
     
-    @ManyToOne
+    @OneToOne(cascade=CascadeType.PERSIST)
     @JoinColumn(name = "id_nota_fiscal", nullable = false)
     private NotaFiscal idNotaFiscal;
 }
