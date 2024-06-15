@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
-import java.util.Set;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,7 +48,7 @@ import com.javali.CtrlA.repositorios.ManutencaoRepositorio;
 
 @RestController
 @RequestMapping("/relatorio")
-//@PreAuthorize("hasAnyAuthority('ADM')")
+@PreAuthorize("hasAnyAuthority('ADM')")
 public class RelatorioControle {
 	private String[] valoresCabecalhoTangivel = {
 		"ID Ativo",
@@ -708,8 +707,6 @@ public class RelatorioControle {
         filtroManutencao.tipo = filtro.tipoManutencao;
         filtroManutencao.idAtivo = filtro.idAtivo;
         PopularRelatorioManutencoes(workbook, filtroManutencao);
-        
-        
         
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
