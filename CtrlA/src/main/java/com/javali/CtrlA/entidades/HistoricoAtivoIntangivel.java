@@ -126,5 +126,6 @@ public class HistoricoAtivoIntangivel extends RepresentationModel<HistoricoAtivo
     @Column(name = "tipo_documento_nota_fiscal", length = 30)
     private String tipoDocumentoNotaFiscal;
 
-
+    @Column(name = "valor_residual", precision = 10, scale = 2)
+    private BigDecimal valorResidual;
 }
