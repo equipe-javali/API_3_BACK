@@ -184,7 +184,7 @@ public class UsuarioControle {
     	
     	if (usuario.getEmail() != null) {
         	String assunto = "Alteração de senha";
-        	String texto = "Houve requisição de alteração de senha\n caso você tenha pedido clique no seguinte link:\nhttps://www.youtube.com/watch?v=dQw4w9WgXcQ\n Caso você não tenha pedido ignore essa mensgem";
+        	String texto = "Houve requisição de alteração de senha\n caso você tenha pedido clique no seguinte link:\nhttp://localhost:3000/alterarSenha\n Caso você não tenha pedido ignore essa mensgem";
         	
         	boolean resEmail = emailServico.enviarMsg(email.getEmail(), assunto, texto);
         	
