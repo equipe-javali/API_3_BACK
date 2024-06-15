@@ -26,5 +26,7 @@ EXEMPLO
 ## Descrição das branches
 
 2.0 - Branch para a crição da rota que altera a senha de um usuário em caso de esquecimento de senha - Caique
+
 10 - Branch para o desenvolvimento do envio e armazenamento de notas fiscais - Rafael
+
 11 - Branch para o desenvolvimento do envio e armazenamento das fotos de usuário - Rafael
