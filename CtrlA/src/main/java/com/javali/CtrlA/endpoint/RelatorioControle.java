@@ -171,6 +171,31 @@ public class RelatorioControle {
         			relatorio.valorTotal += valorReal;
         		}
         		else relatorio.valorTotal += valorAtual;
+        		
+        		if (EmManutencao(tangivel.getAtivo().getId())) {
+        			totalEmManutencao += 1;
+        			
+        			Long manutencao = relatorio.qtdPorLocal.get("Manutencao");
+        			if (manutencao == null) relatorio.qtdPorLocal.put("Manutencao", 1l);
+        			else relatorio.qtdPorLocal.put("Manutencao", manutencao + 1);
+        		}
+        		else if (tangivel.getAtivo().getIdResponsavel() != null) {
+        			totalEmUso += 1;
+        			
+        			Usuario usuario = tangivel.getAtivo().getIdResponsavel();
+        			String local = usuario.getDepartamento();
+        			
+        			Long manutencao = relatorio.qtdPorLocal.get(local);
+        			if (manutencao == null) relatorio.qtdPorLocal.put(local, 1l);
+        			else relatorio.qtdPorLocal.put(local, manutencao + 1);
+        		}
+        		else {
+        			totalNaoAlocado += 1;
+        			
+        			Long naoAlocado = relatorio.qtdPorLocal.get("Não Alocado");
+        			if (naoAlocado == null) relatorio.qtdPorLocal.put("Não Alocado", 1l);
+        			else relatorio.qtdPorLocal.put("Não Alocado", naoAlocado + 1);
+        		}
         	}
         }
         if (filtro.tipo == TipoRelatorioAtivo.Intangiveis || filtro.tipo == TipoRelatorioAtivo.DadosGerais) {
@@ -193,38 +218,32 @@ public class RelatorioControle {
         			relatorio.valorTotal += valorReal;
         		}
         		else relatorio.valorTotal += valorAtual;
+        		
+        		if (EmManutencao(intangivel.getAtivo().getId())) {
+        			totalEmManutencao += 1;
+        			
+        			Long manutencao = relatorio.qtdPorLocal.get("Manutencao");
+        			if (manutencao == null) relatorio.qtdPorLocal.put("Manutencao", 1l);
+        			else relatorio.qtdPorLocal.put("Manutencao", manutencao + 1);
+        		}
+        		else if (intangivel.getAtivo().getIdResponsavel() != null) {
+        			totalEmUso += 1;
+        			
+        			Usuario usuario = intangivel.getAtivo().getIdResponsavel();
+        			String local = usuario.getDepartamento();
+        			
+        			Long manutencao = relatorio.qtdPorLocal.get(local);
+        			if (manutencao == null) relatorio.qtdPorLocal.put(local, 1l);
+        			else relatorio.qtdPorLocal.put(local, manutencao + 1);
+        		}
+        		else {
+        			totalNaoAlocado += 1;
+        			
+        			Long naoAlocado = relatorio.qtdPorLocal.get("Não Alocado");
+        			if (naoAlocado == null) relatorio.qtdPorLocal.put("Não Alocado", 1l);
+        			else relatorio.qtdPorLocal.put("Não Alocado", naoAlocado + 1);
+        		}
         	}
-        }
-        
-        for(Ativo ativo : ativoRepositorio.findAll()) {
-        	if (ativo.getDataAquisicao().compareTo(filtro.dataInicio) < 0 || ativo.getDataAquisicao().compareTo(filtro.dataFim) > 0) {
-    			continue;
-    		}
-        	
-        	if (EmManutencao(ativo.getId())) {
-    			totalEmManutencao += 1;
-    			
-    			Long manutencao = relatorio.qtdPorLocal.get("Manutencao");
-    			if (manutencao == null) relatorio.qtdPorLocal.put("Manutencao", 1l);
-    			else relatorio.qtdPorLocal.put("Manutencao", manutencao + 1);
-    		}
-    		else if (ativo.getIdResponsavel() != null) {
-    			totalEmUso += 1;
-    			
-    			Usuario usuario = ativo.getIdResponsavel();
-    			String local = usuario.getDepartamento();
-    			
-    			Long manutencao = relatorio.qtdPorLocal.get(local);
-    			if (manutencao == null) relatorio.qtdPorLocal.put(local, 1l);
-    			else relatorio.qtdPorLocal.put(local, manutencao + 1);
-    		}
-    		else {
-    			totalNaoAlocado += 1;
-    			
-    			Long naoAlocado = relatorio.qtdPorLocal.get("Não Alocado");
-    			if (naoAlocado == null) relatorio.qtdPorLocal.put("Não Alocado", 1l);
-    			else relatorio.qtdPorLocal.put("Não Alocado", naoAlocado + 1);
-    		}
         }
         
         float totalTotal = totalNaoAlocado + totalEmUso + totalEmManutencao;
