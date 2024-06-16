@@ -28,7 +28,7 @@ public class AtivoIntangivel extends RepresentationModel<AtivoIntangivel> {
     @Column(name = "data_expiracao")
     private LocalDate dataExpiracao;
 
-    @Column(name = "taxa_amortizacao", precision = 10, scale = 2)
+    @Column(name = "taxa_amortizacao")
     private BigDecimal taxaAmortizacao;
 
     @Size(max = 30)

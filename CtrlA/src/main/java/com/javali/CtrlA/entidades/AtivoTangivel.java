@@ -28,7 +28,7 @@ public class AtivoTangivel extends RepresentationModel<AtivoTangivel> {
     @Column(name = "garantia")
     private LocalDate garantia;
 
-    @Column(name = "taxa_depreciacao", precision = 10, scale = 2)
+    @Column(name = "taxa_depreciacao")
     private BigDecimal taxaDepreciacao;
 
     @Size(max = 30)

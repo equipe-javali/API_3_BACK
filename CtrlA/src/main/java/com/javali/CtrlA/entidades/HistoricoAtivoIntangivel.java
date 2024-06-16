@@ -76,7 +76,7 @@ public class HistoricoAtivoIntangivel extends RepresentationModel<HistoricoAtivo
     @Column(name = "data_expiracao_ativo_intangivel")
     private LocalDate dataExpiracaoAtivoIntangivel;
 
-    @Column(name = "taxa_amortizacao_ativo_intangivel", precision = 10, scale = 2)
+    @Column(name = "taxa_amortizacao_ativo_intangivel")
     private BigDecimal taxaAmortizacaoAtivoIntangivel;
 
     @Size(max = 30)
@@ -126,5 +126,6 @@ public class HistoricoAtivoIntangivel extends RepresentationModel<HistoricoAtivo
     @Column(name = "tipo_documento_nota_fiscal", length = 30)
     private String tipoDocumentoNotaFiscal;
 
-
+    @Column(name = "valor_residual", precision = 10, scale = 2)
+    private BigDecimal valorResidual;
 }
