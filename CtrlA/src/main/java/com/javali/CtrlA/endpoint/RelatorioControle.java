@@ -220,6 +220,10 @@ public class RelatorioControle {
     		}
     		else {
     			totalNaoAlocado += 1;
+    			
+    			Long naoAlocado = relatorio.qtdPorLocal.get("Não Alocado");
+    			if (naoAlocado == null) relatorio.qtdPorLocal.put("Não Alocado", 1l);
+    			else relatorio.qtdPorLocal.put("Não Alocado", naoAlocado + 1);
     		}
         }
         
