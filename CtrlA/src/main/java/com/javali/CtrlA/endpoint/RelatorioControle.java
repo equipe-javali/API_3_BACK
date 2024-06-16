@@ -173,7 +173,7 @@ public class RelatorioControle {
         		else relatorio.valorTotal += valorAtual;
         	}
         }
-        else if (filtro.tipo == TipoRelatorioAtivo.Intangiveis || filtro.tipo == TipoRelatorioAtivo.DadosGerais) {
+        if (filtro.tipo == TipoRelatorioAtivo.Intangiveis || filtro.tipo == TipoRelatorioAtivo.DadosGerais) {
         	for(AtivoIntangivel intangivel : intangivelRepositorio.findAll()) {
         		if (intangivel.getAtivo().getDataAquisicao().compareTo(filtro.dataInicio) < 0 || intangivel.getAtivo().getDataAquisicao().compareTo(filtro.dataFim) > 0) {
         			continue;
