@@ -119,8 +119,11 @@ public class RelatorioControle {
     		
     		LocalDate manutencaoInicio = m.getDataInicio();
     		LocalDate manutencaoFim = m.getDataFim();
+			if (manutencaoFim == null) {
+				manutencaoFim = LocalDate.parse("9999-12-31");
+			}
     		
-    		if (manutencaoInicio == null || manutencaoFim == null) {
+    		if (manutencaoInicio == null) {
     			continue;
     		}
     		
@@ -251,7 +254,11 @@ public class RelatorioControle {
     		if (filtro.tipo != TipoRelatorioManutencao.DadosGerais && filtro.tipo.ordinal() != m.getTipo()) {
     			continue;
     		}
-    		if (m.getDataInicio().compareTo(filtro.dataInicio) < 0 || m.getDataFim().compareTo(filtro.dataFim) > 0) {
+
+    		LocalDate manutencaoFim = m.getDataFim();
+    		if(manutencaoFim == null) manutencaoFim = LocalDate.now();
+
+    		if (m.getDataInicio().compareTo(filtro.dataInicio) < 0 || manutencaoFim.compareTo(filtro.dataFim) > 0) {
     			continue;
     		}
     		
@@ -262,8 +269,6 @@ public class RelatorioControle {
 			if (qtdTipo == null) qtdPorTipo.put(m.getTipo(), 1l);
 			else qtdPorTipo.put(m.getTipo(), qtdTipo + 1);
 			
-    		LocalDate manutencaoFim = m.getDataFim();
-    		if(manutencaoFim == null) manutencaoFim = LocalDate.now();
 			long diasManutencao = ChronoUnit.DAYS.between(m.getDataInicio(), manutencaoFim);
 			
 			Long dias = diasPorTipo.get(m.getTipo());
