@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @RestController
 @RequestMapping("/usuarioLogin")
 public class UsuarioLoginControle {
+	
+	private final BCryptPasswordEncoder codificador = new BCryptPasswordEncoder();
 
     @Autowired
     private UsuarioLoginRepositorio repositorio;
@@ -25,6 +28,8 @@ public class UsuarioLoginControle {
 
     @PostMapping(value = "/cadastro", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UsuarioLogin> criarUsuariologin(@RequestBody UsuarioLogin novoUsuarioLogin) {
+    	novoUsuarioLogin.setSenha(codificador.encode(novoUsuarioLogin.getSenha()));
+    	System.out.println(novoUsuarioLogin.getSenha());
         Usuario usuario = usuarioRepositorio.findById(novoUsuarioLogin.getUsuario().getId())
                 .orElseThrow(() -> new RuntimeException("Usuario not found with id " + novoUsuarioLogin.getUsuario().getId()));
         novoUsuarioLogin.setUsuario(usuario);
@@ -51,6 +56,7 @@ public class UsuarioLoginControle {
 
     @PutMapping("/atualizacao/{id}")
     public ResponseEntity<UsuarioLogin> atualizarUsuariologin(@PathVariable Long id, @RequestBody UsuarioLogin usuarioLoginAtualizado) {
+    	usuarioLoginAtualizado.setSenha(codificador.encode(usuarioLoginAtualizado.getSenha()));
         return repositorio.findById(id)
                 .map(usuarioLogin -> {
                     usuarioLogin.setSenha(usuarioLoginAtualizado.getSenha());
