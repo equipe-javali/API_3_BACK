@@ -55,6 +55,8 @@ public class HistoricoAtivoIntangivelServico {
         historicoAtivoIntangivel.setDataAquisicaoAtivo(ativoIntangivel.getAtivo().getDataAquisicao());
         historicoAtivoIntangivel.setDataCadastroAtivo(ativoIntangivel.getAtivo().getDataCadastro());
         historicoAtivoIntangivel.setCamposPersonalizadosAtivo(ativoIntangivel.getAtivo().getCamposPersonalizados());
+        historicoAtivoIntangivel.setValorResidual(ativoIntangivel.getAtivo().getValorResidual());
+        
 
 
         // Campos de Usuario
